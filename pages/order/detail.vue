@@ -248,8 +248,13 @@
     PayStatusEnum,
     ReceiptStatusEnum
   } from '@/common/enum/order'
+  import ClientEnum from '@/common/enum/Client'
+  import { PayMethodEnum } from '@/common/enum/payment'
   import { DeliveryMethodEnum } from '@/common/enum/order/delivery'
   import * as OrderApi from '@/api/order'
+
+  // wx.onAppShow监听器
+  let listener = false
 
   export default {
     data() {
@@ -262,6 +267,7 @@
         PayStatusEnum,
         ReceiptStatusEnum,
         DeliveryMethodEnum,
+        PayMethodEnum,
         // 当前订单ID
         orderId: null,
         // 加载中
@@ -289,6 +295,19 @@
           this.canReset = val
         }
       })
+      // #ifdef MP-WEIXIN
+      // 微信小程序确认收货组件 - 回调监听
+      this.listenerBusinessView()
+      // #endif
+    },
+
+    /**
+     * 生命周期函数--监听页面卸载
+     */
+    onUnload() {
+      // #ifdef MP-WEIXIN
+      wx.offAppShow(listener)
+      // #endif
     },
 
     /**
@@ -352,10 +371,8 @@
                 .then(result => {
                   // 显示成功信息
                   app.$toast(result.message)
-                  setTimeout(() => {
-                    // 刷新当前订单数据
-                    app.getOrderDetail(true)
-                  }, 1500)
+                  // 刷新当前订单数据
+                  setTimeout(() => app.getOrderDetail(true), 1500)
                 })
             }
           }
@@ -363,25 +380,94 @@
       },
 
       // 确认收货
-      onReceipt(orderId) {
+      async onReceipt(orderId) {
+        const app = this
+        // 判断微信小程序端 - 同步发货信息管理
+        if (
+          app.platform === ClientEnum.MP_WEIXIN.value &&
+          app.order.sync_weixin_shipping &&
+          app.order.pay_method === PayMethodEnum.WECHAT.value &&
+          app.order.platform === ClientEnum.MP_WEIXIN.value
+        ) {
+          // #ifdef MP-WEIXIN
+          // 确认收货弹窗 (微信小程序提供的用于同步发货信息管理)
+          app.openBusinessView()
+          // #endif
+        } else {
+          // 确认收货弹窗 (系统默认)
+          app.receiptModal(orderId)
+        }
+      },
+
+      // 确认收货弹窗 (微信小程序提供的用于同步发货信息管理)
+      // #ifdef MP-WEIXIN
+      openBusinessView() {
+        const app = this
+        return new Promise((resolve, reject) => {
+          // 引导用户升级微信版本
+          if (!wx.openBusinessView) {
+            console.log('不支持 wx.openBusinessView')
+            resolve(false)
+          }
+          // 拉起确认收货组件
+          wx.openBusinessView({
+            businessType: 'weappOrderConfirm',
+            extraData: { transaction_id: app.order.trade.trade_no },
+            success() {
+              // dosomething
+              console.log('拉起确认收货组件 success')
+              resolve(true)
+            },
+            fail(err) {
+              //dosomething
+              console.error('拉起确认收货组件 fail', err)
+              resolve(false)
+            }
+          })
+        })
+      },
+
+      // 微信小程序确认收货组件 - 回调监听
+      listenerBusinessView() {
+        // 这一步是为了防止出现多个监听器
+        if (listener !== false) {
+          wx.offAppShow(listener)
+        }
+        // 监听页面显示事件：微信小程序确认收货组件
+        listener = wx.onAppShow(({ referrerInfo }) => {
+          console.log('wx.onAppShow', this.orderId, referrerInfo.extraData)
+          // referrerInfo.extraData.status = success 用户确认收货成功;  fail 用户确认收货失败; cancel 用户取消
+          // 确认收货
+          if (referrerInfo.extraData && referrerInfo.extraData.status && referrerInfo.extraData.status === 'success') {
+            console.log('success receiptEvent', this.orderId)
+            this.receiptEvent(this.orderId)
+          }
+        })
+      },
+      // #endif
+
+      // 确认收货弹窗 (系统默认)
+      receiptModal(orderId) {
         const app = this
         uni.showModal({
           title: '友情提示',
           content: '确认收到商品了吗？',
           success(o) {
-            if (o.confirm) {
-              OrderApi.receipt(orderId)
-                .then(result => {
-                  // 显示成功信息
-                  app.$success(result.message)
-                  setTimeout(() => {
-                    // 刷新当前订单数据
-                    app.getOrderDetail(true)
-                  }, 1500)
-                })
-            }
+            o.confirm && app.receiptEvent(orderId)
           }
-        });
+        })
+      },
+
+      // 确认收货事件
+      receiptEvent(orderId) {
+        const app = this
+        OrderApi.receipt(orderId)
+          .then(result => {
+            // 显示成功信息
+            app.$success(result.message)
+            // 刷新当前订单数据
+            setTimeout(() => app.getOrderDetail(true), 1500)
+          })
       },
 
       // 点击去支付
