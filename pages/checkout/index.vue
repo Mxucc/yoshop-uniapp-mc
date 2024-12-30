@@ -154,37 +154,59 @@
         <view class="popup__coupon">
           <view class="coupon__title f-30">选择优惠券</view>
           <!-- 优惠券列表 -->
-          <view class="coupon-list">
-            <scroll-view :scroll-y="true" style="height: 565rpx;">
+          <scroll-view :scroll-y="true" style="height: 650rpx;">
+            <view class="coupon-list">
               <view class="coupon-item" v-for="(item, index) in order.couponList" :key="index">
-                <view class="item-wrapper" :class="[item.is_apply ? 'color-' + CouponColors[index % CouponColors.length] : 'color-gray']"
-                  @click="handleSelectCoupon(index)">
-                  <view class="coupon-type">{{ CouponTypeEnum[item.coupon_type].name }}</view>
-                  <view class="tip dis-flex flex-dir-column flex-x-center">
-                    <view v-if="item.coupon_type == CouponTypeEnum.FULL_DISCOUNT.value">
-                      <text class="f-30">￥</text>
-                      <text class="money">{{ item.reduce_price }}</text>
-                    </view>
-                    <text class="money" v-if="item.coupon_type == CouponTypeEnum.DISCOUNT.value">{{ item.discount }}折</text>
-                    <text class="pay-line">满{{ item.min_price }}元可用</text>
+                <view class="item-wrapper" :class="[ !item.state.value ? 'disable' : '' ]" @click="handleSelectCoupon(index)">
+                  <!-- 优惠券类型 (标签) -->
+                  <view class="coupon-tag">
+                    <text>{{ CouponTypeEnum[item.coupon_type].name }}</text>
                   </view>
-                  <view class="split-line"></view>
-                  <view class="content dis-flex flex-dir-column flex-x-between">
-                    <view class="title">{{ item.name }}</view>
-                    <view class="bottom dis-flex flex-y-center">
-                      <view class="time flex-box">
-                        <block v-if="item.start_time === item.end_time">{{ item.start_time }} 当天有效</block>
-                        <block v-else>{{ item.start_time }}~{{ item.end_time }}</block>
+                  <view class="coupon-left">
+                    <!-- 优惠额度/折扣 -->
+                    <view class="coupon-reduce">
+                      <view class="coupon-reduce-unit"><text>￥</text></view>
+                      <view class="coupon-reduce-amount">
+                        <text class="value">{{ item.reduce_price }}</text>
                       </view>
                     </view>
+                    <!-- 最低消费金额 -->
+                    <text class="coupon-hint">满{{ item.min_price }}元可用</text>
+                  </view>
+                  <view class="coupon-content">
+                    <view class="coupon-name">{{ item.name }}</view>
+                    <view class="coupon-middle">
+                      <view class="coupon-expire">
+                        <text v-if="item.expire_type == CouponTypeEnum.FULL_DISCOUNT.value">领取后{{ item.expire_day }}天内有效</text>
+                        <text v-if="item.expire_type == CouponTypeEnum.DISCOUNT.value">
+                          <block v-if="item.start_time === item.end_time">{{ item.start_time }} 当天有效</block>
+                          <block v-else>{{ item.start_time }}~{{ item.end_time }}</block>
+                        </text>
+                      </view>
+                    </view>
+                    <view v-if="item.describe" class="coupon-expand" @click.stop="handleDescribe(index)">
+                      <text>使用说明</text>
+                      <text class="coupon-expand-arrow iconfont icon-arrow-down" :class="[item.expand ? 'expand' : '']" />
+                    </view>
+                  </view>
+                  <view class="coupon-right">
+                    <u-radio-group v-model="selectCouponId">
+                      <u-radio :name="item.user_coupon_id" :active-color="appTheme.mainBg"></u-radio>
+                    </u-radio-group>
+                  </view>
+                </view>
+                <!-- 优惠券描述 -->
+                <view :class="[item.expand ? 'expand' : '']" class="coupon-expand-rules">
+                  <view class="coupon-expand-rules-content">
+                    <view class="pre">{{ item.describe }}</view>
                   </view>
                 </view>
               </view>
-            </scroll-view>
-          </view>
+            </view>
+          </scroll-view>
           <!-- 不使用优惠券 -->
-          <view class="coupon__do_not dis-flex flex-y-center flex-x-center">
-            <view class="control dis-flex flex-y-center flex-x-center" @click="handleNotUseCoupon()">
+          <view class="coupon__do_not">
+            <view class="control" @click="handleNotUseCoupon()">
               <text class="f-26">不使用优惠券</text>
             </view>
           </view>
@@ -363,6 +385,12 @@
       // 显示优惠券弹窗
       handleShowPopup() {
         this.showPopup = true
+      },
+
+      // 展开优惠券描述
+      handleDescribe(index) {
+        const { couponList } = this.order
+        couponList[index].expand = !couponList[index].expand
       },
 
       // 选择优惠券
