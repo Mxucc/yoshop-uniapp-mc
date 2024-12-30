@@ -131,7 +131,8 @@
           <!-- 商品售后 -->
           <view class="goods-refund">
             <text v-if="goods.refund" class="stata-text">已申请售后</text>
-            <view v-else-if="order.isAllowRefund" class="action-btn" @click.stop="handleApplyRefund(goods.order_goods_id)">申请售后</view>
+            <view v-else-if="order.isAllowRefund && goods.delivery_status == DeliveryStatusEnum.DELIVERED.value" class="action-btn"
+              @click.stop="handleApplyRefund(goods.order_goods_id)">申请售后</view>
           </view>
         </view>
       </view>
@@ -240,6 +241,7 @@
 </template>
 
 <script>
+  import { inArray } from '@/utils/util'
   import {
     OrderTypeEnum,
     DeliveryStatusEnum,
@@ -258,7 +260,9 @@
 
   export default {
     data() {
-      return {
+      return {    
+        // 外部方法
+        inArray,
         // 枚举类
         OrderTypeEnum,
         DeliveryStatusEnum,
