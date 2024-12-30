@@ -15,7 +15,10 @@
               </view>
               <view class="goods-item-right">
                 <view class="goods-info">
-                  <view v-if="inArray('goodsName', itemStyle.show)" class="goods-name twoline-hide">{{ dataItm.goods_name }}</view>
+                  <view v-if="inArray('goodsName', itemStyle.show)" class="goods-name"
+                    :class="[ itemStyle.goodsNameRows == 'two' ? 'twoline-hide' : 'oneline-hide', `row-${itemStyle.goodsNameRows}` ]">
+                    {{ dataItm.goods_name }}
+                  </view>
                   <view v-if="inArray('sellingPoint', itemStyle.show)" class="goods-selling">
                     <text class="selling oneline-hide" :style="{ color: itemStyle.sellingColor }">{{ dataItm.selling_point }}</text>
                   </view>
@@ -37,9 +40,8 @@
                       </text>
                     </view>
                     <view v-show="inArray('cartBtn', itemStyle.show) && itemStyle.column < 3" class="action">
-                      <view class="btn-cart" :style="{ background: itemStyle.btnCartColor, color: itemStyle.btnFontColor }"
-                        @click.stop="handleAddCart(dataItm)">
-                        <text class="cart-icon iconfont icon-plus"></text>
+                      <view class="btn-cart" :style="{ color: itemStyle.btnCartColor }" @click.stop="handleAddCart(dataItm)">
+                        <text class="cart-icon iconfont" :class="[`icon-jiagou${itemStyle.btnCartStyle}`]"></text>
                       </view>
                     </view>
                   </view>
@@ -53,7 +55,10 @@
               <image class="image" mode="aspectFill" :src="dataItm.goods_image"></image>
             </view>
             <view class="goods-info">
-              <view v-if="inArray('goodsName', itemStyle.show)" class="goods-name twoline-hide">{{ dataItm.goods_name }}</view>
+              <view v-if="inArray('goodsName', itemStyle.show)" class="goods-name"
+                :class="[ itemStyle.goodsNameRows == 'two' ? 'twoline-hide' : 'oneline-hide', `row-${itemStyle.goodsNameRows}` ]">
+                {{ dataItm.goods_name }}
+              </view>
               <view v-if="inArray('sellingPoint', itemStyle.show)" class="goods-selling">
                 <text class="selling oneline-hide" :style="{ color: itemStyle.sellingColor }">{{ dataItm.selling_point }}</text>
               </view>
@@ -74,9 +79,8 @@
                   </text>
                 </view>
                 <view v-show="inArray('cartBtn', itemStyle.show) && itemStyle.column < 3" class="action">
-                  <view class="btn-cart" :style="{ background: itemStyle.btnCartColor, color: itemStyle.btnFontColor }"
-                    @click.stop="handleAddCart(dataItm)">
-                    <text class="cart-icon iconfont icon-plus"></text>
+                  <view class="btn-cart" :style="{ color: itemStyle.btnCartColor }" @click.stop="handleAddCart(dataItm)">
+                    <text class="cart-icon iconfont" :class="[`icon-jiagou${itemStyle.btnCartStyle}`]"></text>
                   </view>
                 </view>
               </view>
@@ -197,6 +201,12 @@
             .goods-name {
               font-size: 27rpx;
             }
+
+            .footer {
+              position: absolute;
+              bottom: 16rpx;
+              width: 100%;
+            }
           }
 
         }
@@ -289,14 +299,18 @@
             font-size: 26rpx;
             color: #000;
             margin-bottom: 8rpx;
-            min-height: 68rpx;
-            line-height: 1.3;
+            line-height: 1.3; // 用户端
+
+            &.row-two {
+              min-height: 68rpx; // 用户端
+            }
           }
 
           .goods-selling {
             display: flex; // 解决文字超出无法隐藏
             font-size: 24rpx;
             margin-bottom: 8rpx;
+            height: 38rpx;
           }
 
           .goods-sales {
@@ -353,17 +367,10 @@
           .action {
 
             .btn-cart {
-              width: 44rpx;
-              height: 44rpx;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              background-color: #27c29a;
-              color: #fff;
-              border-radius: 50%;
+              text-align: center;
 
               .cart-icon {
-                font-size: 20rpx;
+                font-size: 36rpx;
               }
             }
 
