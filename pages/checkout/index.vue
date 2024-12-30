@@ -361,6 +361,9 @@
         app.curDelivery = order.delivery
         // 如果只有一种配送方式则不显示选项卡
         app.isShowTab = setting.deliveryType.length > 1
+        // 是否使用积分抵扣
+        app.isUsePoints = order.isUsePoints
+        app.selectCouponId = order.couponId
       },
 
       // 获取api请求的参数
@@ -411,8 +414,8 @@
           app.showToast(couponItem.not_apply_info)
           return
         }
-        // 记录选中的优惠券id
-        app.selectCouponId = couponItem.user_coupon_id
+        // 记录选中的优惠券ID
+        app.selectCouponId = app.selectCouponId == couponItem.user_coupon_id ? 0 : couponItem.user_coupon_id
         // 重新获取订单信息
         app.getOrderData()
         // 隐藏优惠券弹层
@@ -421,12 +424,11 @@
 
       // 不使用优惠券
       handleNotUseCoupon() {
-        const app = this
-        app.selectCouponId = 0
+        this.selectCouponId = 0
         // 重新获取订单信息
-        app.getOrderData()
+        this.getOrderData()
         // 隐藏优惠券弹层
-        app.showPopup = false
+        this.showPopup = false
       },
 
       // 快递配送：选择收货地址
