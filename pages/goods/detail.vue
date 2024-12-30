@@ -91,7 +91,8 @@
             </view>
           </view>
           <!-- 客服 -->
-          <customer-btn v-if="isShowCustomerBtn" :showCard="true" :cardTitle="goods.goods_name" :cardImage="goods.goods_image">
+          <customer-btn v-if="isShowCustomerBtn" :showCard="true" :cardTitle="goods.goods_name" :cardImage="goods.goods_image"
+            :cardPath="pagePath">
             <view class="fast-item">
               <view class="fast-icon">
                 <text class="iconfont icon-kefu1"></text>
@@ -178,6 +179,13 @@
         isEnableCart: false,
         // 是否显示在线客服按钮
         isShowCustomerBtn: false,
+      }
+    },
+    computed: {
+      // 当前页面链接
+      pagePath() {
+        const params = this.$getShareUrlParams({ goodsId: this.goodsId })
+        return `/pages/goods/detail?${params}`
       }
     },
 
@@ -278,14 +286,9 @@
      * 分享当前页面
      */
     onShareAppMessage() {
-      const app = this
-      // 构建页面参数
-      const params = app.$getShareUrlParams({
-        goodsId: app.goodsId,
-      })
       return {
-        title: app.goods.goods_name,
-        path: `/pages/goods/detail?${params}`
+        title: this.goods.goods_name,
+        path: this.pagePath
       }
     },
 
@@ -295,14 +298,9 @@
      * https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/share-timeline.html
      */
     onShareTimeline() {
-      const app = this
-      // 构建页面参数
-      const params = app.$getShareUrlParams({
-        goodsId: app.goodsId,
-      })
       return {
-        title: app.goods.goods_name,
-        path: `/pages/goods/detail?${params}`
+        title: this.goods.goods_name,
+        path: this.pagePath
       }
     }
   }
