@@ -30,6 +30,7 @@
   import StoreModel from '@/common/model/Store'
 
   export default {
+    emits: ['end'],
     props: {
       // 弹出隐私窗口时是否隐藏tabbar
       hideTabBar: {
@@ -47,9 +48,9 @@
       }
     },
 
-    created() {
+    async created() {
       // 获取商城基本信息
-      this.getStoreInfo()
+      await this.getStoreInfo()
       // #ifdef MP-WEIXIN
       // 弹出隐私协议 (微信小程序端)
       this.needAuthorization()
@@ -59,8 +60,8 @@
     methods: {
 
       // 获取商城基本信息
-      getStoreInfo() {
-        StoreModel.storeInfo().then(storeInfo => this.storeInfo = storeInfo)
+      async getStoreInfo() {
+        await StoreModel.storeInfo().then(storeInfo => this.storeInfo = storeInfo)
       },
 
       // 弹出隐私协议 (微信小程序端)
@@ -73,11 +74,13 @@
             if (needAuthorization) {
               app.showPrivacy = true
               app.hideTabBar && uni.hideTabBar()
+            } else {
+              app.$emit('end')
             }
           }
         })
       },
-      
+
       // 查看隐私协议内容
       handlePrivacyContract() {
         uni.openPrivacyContract()
@@ -93,6 +96,7 @@
 
         this.hideTabBar && uni.showTabBar()
         this.showPrivacy = false
+        this.$emit('end')
       },
 
       // 用户不同意隐私协议
