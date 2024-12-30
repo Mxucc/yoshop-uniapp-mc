@@ -4,7 +4,7 @@
     <view class="diy-goods">
       <view class="goods-list" :class="[`display-${itemStyle.display}`, `column-${itemStyle.column}`]"
         :style="{ padding: `${itemStyle.paddingY * 2}rpx ${itemStyle.paddingX * 2}rpx` }">
-        <view class="goods-item" v-for="(dataItm, index) in dataList" :key="index" :class="[`display-${itemStyle.cardType}`]"
+        <view class="goods-item" v-for="(dataItm, dataIdx) in dataList" :key="dataIdx" :class="[`display-${itemStyle.cardType}`]"
           :style="{ marginBottom: `${itemStyle.itemMargin * 2}rpx`, borderRadius: `${itemStyle.borderRadius * 2}rpx` }"
           @click="handleGoodsItem(dataItm.goods_id)">
           <!-- 单列商品 -->
@@ -117,7 +117,6 @@
 
       // 点击加入购物车
       handleAddCart(item) {
-        console.log('handleAddCart', this.$refs.AddCartPopup)
         this.$refs.AddCartPopup.handle(item)
       },
 
@@ -133,10 +132,10 @@
 
 <style lang="scss" scoped>
   .diy-goods {
-    // 目的是解决划线价横线位置不对
-    // display: flex;
-    // flex-direction: column;
-    overflow: hidden;
+    // 解决 margin-bottom: -10px 导致的容器异常
+    display: flex;
+    flex-direction: column;
+    // overflow: hidden; // 会导致横向无法滑动
 
     .goods-list {
       margin-bottom: -10px;

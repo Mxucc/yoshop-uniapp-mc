@@ -17,7 +17,7 @@
       <block v-if="item.type === 'window'">
         <Window :itemStyle="item.style" :params="item.params" :dataList="item.data" />
       </block>
-      <!-- 视频 -->
+      <!-- 视频组 -->
       <block v-if="item.type === 'video'">
         <Videos :itemStyle="item.style" :params="item.params" />
       </block>
@@ -29,11 +29,11 @@
       <block v-if="item.type === 'notice'">
         <Notice :itemStyle="item.style" :params="item.params" />
       </block>
-      <!-- 导航 -->
+      <!-- 导航组 -->
       <block v-if="item.type === 'navBar'">
         <NavBar :itemStyle="item.style" :params="item.params" :dataList="item.data" />
       </block>
-      <!-- 商品 -->
+      <!-- 商品组 -->
       <block v-if="item.type === 'goods'">
         <Goods :itemStyle="item.style" :params="item.params" :dataList="item.data" />
       </block>
