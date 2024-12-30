@@ -1,6 +1,6 @@
 <template>
   <!-- 搜索框 -->
-  <view class="diy-search">
+  <view class="diy-search" :class="{ sticky: params.sticky }">
     <view class="inner" :class="itemStyle.searchStyle" @click="onTargetSearch">
       <view class="search-input" :style="{ textAlign: itemStyle.textAlign }">
         <text class="search-icon iconfont icon-search"></text>
@@ -46,6 +46,12 @@
     background: #f1f1f2;
     padding: 20rpx 20rpx;
     font-size: 26rpx;
+
+    &.sticky {
+      position: sticky;
+      top: var(--window-top);
+      z-index: 100;
+    }
   }
 
   .inner {
