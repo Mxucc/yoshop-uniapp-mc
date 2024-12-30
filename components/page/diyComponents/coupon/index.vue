@@ -6,19 +6,22 @@
         <view class="coupon-item" :class="{ disable: !dataItem.state.value }" v-for="(dataItem, index) in couponList" :key="index"
           :style="{ marginRight: `${itemStyle.marginRight}px` }">
           <text class="before" :style="{ background: itemStyle.background }"></text>
-          <view class="left-content" :style="{ background: itemStyle.couponBgColor }">
+          <view class="left-content" :style="{ background: itemStyle.couponBgColor, color: itemStyle.couponTextColor }">
             <view class="content-top">
-              <block v-if="dataItem.coupon_type == 10">
+              <template v-if="dataItem.coupon_type == 10">
                 <text class="unit">￥</text>
                 <text class="price">{{ dataItem.reduce_price }}</text>
-              </block>
-              <text v-if="dataItem.coupon_type == 20" class="price">{{ dataItem.discount }}折</text>
+              </template>
+              <template v-if="dataItem.coupon_type == 20">
+                <text class="price">{{ dataItem.discount }}折</text>
+              </template>
             </view>
             <view class="content-bottom">
               <text class="f-22">满{{ dataItem.min_price }}元可用</text>
             </view>
           </view>
-          <view class="right-receive" :style="{ background: itemStyle.receiveBgColor }" @click="handleReceive(index, dataItem)">
+          <view class="right-receive" :style="{ background: itemStyle.receiveBgColor, color: itemStyle.receiveTextColor }"
+            @click="handleReceive(index, dataItem)">
             <block v-if="dataItem.state.value">
               <text>立即</text>
               <text>领取</text>
