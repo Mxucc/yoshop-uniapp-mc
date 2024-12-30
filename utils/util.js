@@ -206,7 +206,7 @@ export const arrayIntersect = (array1, array2) => {
  * @return {Number}
  */
 export const rpx = () => {
-  const { windowWidth } = uni.getSystemInfoSync()
+  const { windowWidth } = uni.getWindowInfo()
   // #ifdef H5
   // 与pages.json文件中的 rpxCalcMaxDeviceWidth参数对应, 请勿修改
   const rpxCalcMaxDeviceWidth = 750

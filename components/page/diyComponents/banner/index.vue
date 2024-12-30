@@ -37,7 +37,7 @@
       }
     },
     created() {
-      const { windowWidth } = uni.getSystemInfoSync()
+      const { windowWidth } = uni.getWindowInfo()
       this.windowWidth = windowWidth > 750 ? 750 : windowWidth
     },
     methods: {
