@@ -137,7 +137,7 @@
     /**
      * 生命周期函数--监听页面显示
      */
-    onShow(options) {
+    onShow() {
       // 获取缓存中的选中记录
       this.checkedIds = uni.getStorageSync(CartIdsIndex)
       // 获取购物车商品列表

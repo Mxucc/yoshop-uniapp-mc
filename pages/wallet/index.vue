@@ -49,7 +49,7 @@
     /**
      * 生命周期函数--监听页面显示
      */
-    onShow(options) {
+    onShow() {
       // 获取页面数据
       this.getPageData()
     },
