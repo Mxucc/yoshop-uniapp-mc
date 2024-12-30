@@ -73,6 +73,10 @@
       <block v-if="item.type === 'ICPLicense'">
         <ICPLicense :itemStyle="item.style" :params="item.params" />
       </block>
+      <!-- 文字标题 -->
+      <block v-if="item.type === 'title'">
+        <Title :itemStyle="item.style" :params="item.params" />
+      </block>
     </block>
   </view>
 </template>
@@ -96,6 +100,7 @@
   import DiyOfficialAccount from './diyComponents/officialAccount'
   import Coupon from './diyComponents/coupon'
   import ICPLicense from './diyComponents/ICPLicense'
+  import Title from './diyComponents/Title'
 
   export default {
     name: "Page",
@@ -117,7 +122,8 @@
       Special,
       DiyOfficialAccount,
       Coupon,
-      ICPLicense
+      ICPLicense,
+      Title
     },
     /**
      * 组件的属性列表
