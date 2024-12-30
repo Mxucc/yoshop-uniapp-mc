@@ -115,6 +115,9 @@
   // 服务详细内容
   .service-content {
     padding: 24rpx;
+    // 设置ios刘海屏底部横线安全区域
+    padding-bottom: calc(constant(safe-area-inset-bottom) + 24rpx);
+    padding-bottom: calc(env(safe-area-inset-bottom) + 24rpx);
 
     .title {
       font-size: 30rpx;

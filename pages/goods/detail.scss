@@ -46,7 +46,7 @@
   padding: 8rpx 14rpx;
   margin-right: 15rpx;
   font-size: 24rpx;
-  color: #EEE0C3;
+  color: #eee0c3;
 }
 
 .goods-sales {
@@ -96,7 +96,7 @@
 // 选择商品规格
 .goods-choice {
   padding: 26rpx 30rpx;
-  font-size: 28rpx;
+  font-size: 26rpx;
 
   .spec-list {
     display: flex;
@@ -111,7 +111,7 @@
 // 商品详情
 .goods-content .item-title {
   padding: 26rpx 30rpx;
-  font-size: 28rpx;
+  font-size: 26rpx;
 }
 
 // 底部操作栏
@@ -155,9 +155,12 @@
 
     &--cart {
       margin-left: 6rpx;
-      .fast-icon { margin-left: -12rpx; }
+
+      .fast-icon {
+        margin-left: -12rpx;
+      }
     }
-    
+
     // 角标
     .fast-badge {
       display: inline-block;
@@ -179,7 +182,7 @@
       position: absolute;
       top: 0;
       right: 0;
-      transform-origin: 100%
+      transform-origin: 100%;
     }
 
     .fast-icon {
