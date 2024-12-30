@@ -10,10 +10,17 @@
           <view class="coupon-left">
             <!-- 优惠额度/折扣 -->
             <view class="coupon-reduce">
-              <view class="coupon-reduce-unit"><text>￥</text></view>
-              <view class="coupon-reduce-amount">
-                <text class="value">{{ item.reduce_price }}</text>
-              </view>
+              <block v-if="item.coupon_type == CouponTypeEnum.FULL_DISCOUNT.value">
+                <view class="coupon-reduce-unit"><text>￥</text></view>
+                <view class="coupon-reduce-amount">
+                  <text class="value">{{ item.reduce_price }}</text>
+                </view>
+              </block>
+              <block v-if="item.coupon_type == CouponTypeEnum.DISCOUNT.value">
+                <view class="coupon-reduce-amount">
+                  <text class="value">{{ item.discount }}折</text>
+                </view>
+              </block>
             </view>
             <!-- 最低消费金额 -->
             <text class="coupon-hint">满{{ item.min_price }}元可用</text>
@@ -201,7 +208,7 @@
     }
 
     .coupon-hint {
-      margin-top: 16rpx;
+      margin-top: 12rpx;
       color: #757575;
       font-size: 24rpx;
       white-space: nowrap;

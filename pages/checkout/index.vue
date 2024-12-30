@@ -105,7 +105,7 @@
           </view>
           <view class="flex-five dis-flex flex-x-end flex-y-center">
             <text class="points-money col-m">-￥{{ order.pointsMoney }}</text>
-            <u-switch v-model="isUsePoints" size="48" active-color="#07c160" @change="getOrderData()"></u-switch>
+            <u-switch v-model="isUsePoints" size="42" :active-color="appTheme.mainBg" @change="getOrderData()"></u-switch>
           </view>
         </view>
         <!-- 配送费用 -->
@@ -165,10 +165,17 @@
                   <view class="coupon-left">
                     <!-- 优惠额度/折扣 -->
                     <view class="coupon-reduce">
-                      <view class="coupon-reduce-unit"><text>￥</text></view>
-                      <view class="coupon-reduce-amount">
-                        <text class="value">{{ item.reduce_price }}</text>
-                      </view>
+                      <block v-if="item.coupon_type == CouponTypeEnum.FULL_DISCOUNT.value">
+                        <view class="coupon-reduce-unit"><text>￥</text></view>
+                        <view class="coupon-reduce-amount">
+                          <text class="value">{{ item.reduce_price }}</text>
+                        </view>
+                      </block>
+                      <block v-if="item.coupon_type == CouponTypeEnum.DISCOUNT.value">
+                        <view class="coupon-reduce-amount">
+                          <text class="value">{{ item.discount }}折</text>
+                        </view>
+                      </block>
                     </view>
                     <!-- 最低消费金额 -->
                     <text class="coupon-hint">满{{ item.min_price }}元可用</text>
