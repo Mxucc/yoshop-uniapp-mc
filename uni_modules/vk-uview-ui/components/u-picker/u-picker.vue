@@ -43,17 +43,17 @@
 					@pickstart="pickstart"
 					@pickend="pickend"
 				>
-					<picker-view-column v-if="showColumnCom && params.province">
+					<picker-view-column v-if="showColumnCom && params && params.province">
 						<view class="u-column-item" v-for="(item, index) in provinces" :key="index">
 							<view class="u-line-1">{{ item.name }}</view>
 						</view>
 					</picker-view-column>
-					<picker-view-column v-if="showColumnCom && params.city">
+					<picker-view-column v-if="showColumnCom && params && params.city">
 						<view class="u-column-item" v-for="(item, index) in citys" :key="index">
 							<view class="u-line-1">{{ item.name }}</view>
 						</view>
 					</picker-view-column>
-					<picker-view-column v-if="showColumnCom && params.area">
+					<picker-view-column v-if="showColumnCom && params && params.area">
 						<view class="u-column-item" v-for="(item, index) in areas" :key="index">
 							<view class="u-line-1">{{ item.name }}</view>
 						</view>
@@ -67,37 +67,37 @@
 					@pickstart="pickstart"
 					@pickend="pickend"
 				>
-					<picker-view-column v-if="showColumnCom && params.year">
+					<picker-view-column v-if="showColumnCom && params && params.year">
 						<view class="u-column-item" v-for="(item, index) in years" :key="index">
 							{{ item }}
 							<text class="u-text" v-if="showTimeTag">年</text>
 						</view>
 					</picker-view-column>
-					<picker-view-column v-if="showColumnCom && params.month">
+					<picker-view-column v-if="showColumnCom && params && params.month">
 						<view class="u-column-item" v-for="(item, index) in months" :key="index">
 							{{ formatNumber(item) }}
 							<text class="u-text" v-if="showTimeTag">月</text>
 						</view>
 					</picker-view-column>
-					<picker-view-column v-if="showColumnCom && params.day">
+					<picker-view-column v-if="showColumnCom && params && params.day">
 						<view class="u-column-item" v-for="(item, index) in days" :key="index">
 							{{ formatNumber(item) }}
 							<text class="u-text" v-if="showTimeTag">日</text>
 						</view>
 					</picker-view-column>
-					<picker-view-column v-if="showColumnCom && params.hour">
+					<picker-view-column v-if="showColumnCom && params && params.hour">
 						<view class="u-column-item" v-for="(item, index) in hours" :key="index">
 							{{ formatNumber(item) }}
 							<text class="u-text" v-if="showTimeTag">时</text>
 						</view>
 					</picker-view-column>
-					<picker-view-column v-if="showColumnCom && params.minute">
+					<picker-view-column v-if="showColumnCom && params && params.minute">
 						<view class="u-column-item" v-for="(item, index) in minutes" :key="index">
 							{{ formatNumber(item) }}
 							<text class="u-text" v-if="showTimeTag">分</text>
 						</view>
 					</picker-view-column>
-					<picker-view-column v-if="showColumnCom && params.second">
+					<picker-view-column v-if="showColumnCom && params && params.second">
 						<view class="u-column-item" v-for="(item, index) in seconds" :key="index">
 							{{ formatNumber(item) }}
 							<text class="u-text" v-if="showTimeTag">秒</text>
@@ -141,6 +141,7 @@
 import provinces from "../../libs/address/provinces.json";
 import citys from "../../libs/address/citys.json";
 import areas from "../../libs/address/areas.json";
+import timeFormat from '../../libs/function/timeFormat.js';
 /**
  * picker picker弹出选择器
  * @description 此选择器有两种弹出模式：一是时间模式，可以配置年，日，月，时，分，秒参数 二是地区模式，可以配置省，市，区参数
@@ -169,7 +170,7 @@ import areas from "../../libs/address/areas.json";
  */
 export default {
 	name: "u-picker",
-	emits: ["update:modelValue", "input", "confirm", "cancel"],
+	emits: ["update:modelValue", "input", "confirm", "cancel", "columnchange"],
 	props: {
 		// 通过双向绑定控制组件的弹出与收起
 		value: {
@@ -182,7 +183,7 @@ export default {
 		},
 		// picker中需要显示的参数
 		params: {
-			type: Object,
+			type: [Object, null],
 			default() {
 				return {
 					year: true,
@@ -249,7 +250,7 @@ export default {
 		},
 		// 默认显示的地区，可传类似["河北省", "秦皇岛市", "北戴河区"]
 		defaultRegion: {
-			type: Array,
+			type: [Array, null],
 			default() {
 				return [];
 			}
@@ -261,7 +262,7 @@ export default {
 		},
 		// 默认显示地区的编码，defaultRegion和areaCode同时存在，areaCode优先，可传类似["13", "1303", "130304"]
 		areaCode: {
-			type: Array,
+			type: [Array, null],
 			default() {
 				return [];
 			}
@@ -334,7 +335,7 @@ export default {
 	},
 	computed: {
 		valueCom() {
-			// #ifndef VUE3
+			// #ifdef VUE2
 			return this.value;
 			// #endif
 
@@ -381,7 +382,7 @@ export default {
 		// watch监听月份的变化，实时变更日的天数，因为不同月份，天数不一样
 		// 一个月可能有30，31天，甚至闰年2月的29天，平年2月28天
 		yearAndMonth(val) {
-			if (this.params.year) this.setDays();
+			if (this.params && this.params.year) this.setDays();
 		},
 		// 微信和QQ小程序由于一些奇怪的原因(故同时对所有平台均初始化一遍)，需要重新初始化才能显示正确的值
 		valueCom:{
@@ -438,7 +439,38 @@ export default {
 		initTimeValue() {
 			// 格式化时间，在IE浏览器(uni不存在此情况)，无法识别日期间的"-"间隔符号
 			let fdate = this.defaultTime.replace(/\-/g, "/");
+			// 如果未设置默认时间，则默认时间 = 当前时间
+			if (!this.defaultTime) {
+				fdate = timeFormat(Date.now(), "yyyy/mm/dd hh:MM:ss");
+			}
 			fdate = fdate && fdate.indexOf("/") == -1 ? `2020/01/01 ${fdate}` : fdate;
+
+			// 时间字符串处理开始-----------------------------------------------------------
+			// ios对时间格式有严格要求，2020/01 这样的格式无法正常转时间，必须是2020/01/01 00:00:00 这样的格式
+			let arr1 = fdate.split(" ");
+			let arr1_1 = arr1[0] || "";
+			let arr1_2 = arr1[1] || "";
+			let arr2;
+			if (arr1_1.indexOf("-") > -1) {
+				arr2 = arr1_1.split("-");
+			} else {
+				arr2 = arr1_1.split("/");
+			}
+			let arr3 = arr1_2.split(":");
+			let dateObj = {
+				year: Number(arr2[0]),
+				month: Number(arr2[1]) || 1,
+				day: Number(arr2[2]) || 1,
+				hour: Number(arr3[0]) || 0,
+				minute: Number(arr3[1]) || 0,
+				second: Number(arr3[2]) || 0,
+			};
+			for (let key in dateObj) {
+				if (dateObj[key] >= 0 && dateObj[key] < 10) dateObj[key] = `0${dateObj[key]}`;
+			}
+			fdate = `${dateObj.year}/${dateObj.month}/${dateObj.day} ${dateObj.hour}:${dateObj.minute}:${dateObj.second}`;
+			// 时间字符串处理结束-----------------------------------------------------------
+
 			let time = null;
 			if (fdate) time = new Date(fdate);
 			else time = new Date();
@@ -453,42 +485,43 @@ export default {
 		init() {
 			this.valueArr = [];
 			this.reset = false;
+			let params = this.params || {};
 			if (this.mode == "time") {
 				this.initTimeValue();
-				if (this.params.year) {
+				if (params.year) {
 					this.valueArr.push(0);
 					this.setYears();
 				}
-				if (this.params.month) {
+				if (params.month) {
 					this.valueArr.push(0);
 					this.setMonths();
 				}
-				if (this.params.day) {
+				if (params.day) {
 					this.valueArr.push(0);
 					this.setDays();
 				}
-				if (this.params.hour) {
+				if (params.hour) {
 					this.valueArr.push(0);
 					this.setHours();
 				}
-				if (this.params.minute) {
+				if (params.minute) {
 					this.valueArr.push(0);
 					this.setMinutes();
 				}
-				if (this.params.second) {
+				if (params.second) {
 					this.valueArr.push(0);
 					this.setSeconds();
 				}
 			} else if (this.mode == "region") {
-				if (this.params.province) {
+				if (params.province) {
 					this.valueArr.push(0);
 					this.setProvinces();
 				}
-				if (this.params.city) {
+				if (params.city) {
 					this.valueArr.push(0);
 					this.setCitys();
 				}
-				if (this.params.area) {
+				if (params.area) {
 					this.valueArr.push(0);
 					this.setAreas();
 				}
@@ -512,14 +545,15 @@ export default {
 			this.valueArr.splice(this.valueArr.length - 1, 1, this.getIndex(this.months, this.month));
 		},
 		setDays() {
+			let params = this.params || {};
 			let totalDays = new Date(this.year, this.month, 0).getDate();
 			this.days = this.generateArray(1, totalDays);
 			let index = 0;
 			// 这里不能使用类似setMonths()中的this.valueArr.splice(this.valueArr.length - 1, xxx)做法
 			// 因为this.month和this.year变化时，会触发watch中的this.setDays()，导致this.valueArr.length计算有误
-			if (this.params.year && this.params.month) index = 2;
-			else if (this.params.month) index = 1;
-			else if (this.params.year) index = 1;
+			if (params.year && params.month) index = 2;
+			else if (params.month) index = 1;
+			else if (params.year) index = 1;
 			else index = 0;
 			// 当月份变化时，会导致日期的天数也会变化，如果原来选的天数大于变化后的天数，则重置为变化后的最大值
 			// 比如原来选中3月31日，调整为2月后，日期变为最大29，这时如果day值继续为31显然不合理，于是将其置为29(picker-column从1开始)
@@ -539,15 +573,16 @@ export default {
 			this.valueArr.splice(this.valueArr.length - 1, 1, this.getIndex(this.seconds, this.second));
 		},
 		setProvinces() {
+			let params = this.params || {};
 			// 判断是否需要province参数
-			if (!this.params.province) return;
+			if (!params.province) return;
 			let tmp = "";
 			let useCode = false;
 			// 如果同时配置了defaultRegion和areaCode，优先使用areaCode参数
-			if (this.areaCode.length) {
+			if (this.areaCode && this.areaCode.length) {
 				tmp = this.areaCode[0];
 				useCode = true;
-			} else if (this.defaultRegion.length) tmp = this.defaultRegion[0];
+			} else if (this.defaultRegion && this.defaultRegion.length) tmp = this.defaultRegion[0];
 			else tmp = 0;
 			// 历遍省份数组匹配
 			provinces.map((v, k) => {
@@ -561,13 +596,14 @@ export default {
 			this.valueArr.splice(0, 1, this.province);
 		},
 		setCitys() {
-			if (!this.params.city) return;
+			let params = this.params || {};
+			if (!params.city) return;
 			let tmp = "";
 			let useCode = false;
-			if (this.areaCode.length) {
+			if (this.areaCode && this.areaCode.length) {
 				tmp = this.areaCode[1];
 				useCode = true;
-			} else if (this.defaultRegion.length) tmp = this.defaultRegion[1];
+			} else if (this.defaultRegion && this.defaultRegion.length) tmp = this.defaultRegion[1];
 			else tmp = 0;
 			citys[this.province].map((v, k) => {
 				if (useCode ? v.code == tmp : v.name == tmp) {
@@ -579,13 +615,14 @@ export default {
 			this.valueArr.splice(1, 1, this.city);
 		},
 		setAreas() {
-			if (!this.params.area) return;
+			let params = this.params || {};
+			if (!params.area) return;
 			let tmp = "";
 			let useCode = false;
-			if (this.areaCode.length) {
+			if (this.areaCode && this.areaCode.length) {
 				tmp = this.areaCode[2];
 				useCode = true;
-			} else if (this.defaultRegion.length) tmp = this.defaultRegion[2];
+			} else if (this.defaultRegion && this.defaultRegion.length) tmp = this.defaultRegion[2];
 			else tmp = 0;
 			areas[this.province][this.city].map((v, k) => {
 				if (useCode ? v.code == tmp : v.name == tmp) {
@@ -602,29 +639,31 @@ export default {
 		},
 		// 用户更改picker的列选项
 		change(e) {
+			let params = this.params || {};
+			let oldValueArr = JSON.parse(JSON.stringify(this.valueArr || []));
 			this.valueArr = e.detail.value;
 			let i = 0;
 			if (this.mode == "time") {
-				// 这里使用i++，是因为this.valueArr数组的长度是不确定长度的，它根据this.params的值来配置长度
+				// 这里使用i++，是因为this.valueArr数组的长度是不确定长度的，它根据params的值来配置长度
 				// 进入if规则，i会加1，保证了能获取准确的值
-				if (this.params.year) this.year = this.years[this.valueArr[i++]];
-				if (this.params.month) this.month = this.months[this.valueArr[i++]];
-				if (this.params.day) this.day = this.days[this.valueArr[i++]];
-				if (this.params.hour) this.hour = this.hours[this.valueArr[i++]];
-				if (this.params.minute) this.minute = this.minutes[this.valueArr[i++]];
-				if (this.params.second) this.second = this.seconds[this.valueArr[i++]];
+				if (params.year) this.year = this.years[this.valueArr[i++]];
+				if (params.month) this.month = this.months[this.valueArr[i++]];
+				if (params.day) this.day = this.days[this.valueArr[i++]];
+				if (params.hour) this.hour = this.hours[this.valueArr[i++]];
+				if (params.minute) this.minute = this.minutes[this.valueArr[i++]];
+				if (params.second) this.second = this.seconds[this.valueArr[i++]];
 			} else if (this.mode == "region") {
-				if (this.params.province) this.province = this.valueArr[i++];
-				if (this.params.city) this.city = this.valueArr[i++];
-				if (this.params.area) this.area = this.valueArr[i++];
+				if (params.province) this.province = this.valueArr[i++];
+				if (params.city) this.city = this.valueArr[i++];
+				if (params.area) this.area = this.valueArr[i++];
 			} else if (this.mode == "multiSelector") {
 				let index = null;
 				// 对比前后两个数组，寻找变更的是哪一列，如果某一个元素不同，即可判定该列发生了变化
-				this.defaultSelector.map((val, idx) => {
-					if (val != e.detail.value[idx]) index = idx;
+				oldValueArr.map((val, idx) => {
+					if (val !== e.detail.value[idx]) index = idx;
 				});
 				// 为了让用户对多列变化时，对动态设置其他列的变更
-				if (index != null) {
+				if (index !== null) {
 					this.$emit("columnchange", {
 						column: index,
 						index: e.detail.value[index]
@@ -634,23 +673,24 @@ export default {
 		},
 		// 用户点击确定按钮
 		getResult(event = null) {
+			let params = this.params || {};
 			// #ifdef MP-WEIXIN
 			if (this.moving) return;
 			// #endif
 			let result = {};
-			// 只返回用户在this.params中配置了为true的字段
+			// 只返回用户在params中配置了为true的字段
 			if (this.mode == "time") {
-				if (this.params.year) result.year = this.formatNumber(this.year || 0);
-				if (this.params.month) result.month = this.formatNumber(this.month || 0);
-				if (this.params.day) result.day = this.formatNumber(this.day || 0);
-				if (this.params.hour) result.hour = this.formatNumber(this.hour || 0);
-				if (this.params.minute) result.minute = this.formatNumber(this.minute || 0);
-				if (this.params.second) result.second = this.formatNumber(this.second || 0);
-				if (this.params.timestamp) result.timestamp = this.getTimestamp();
+				if (params.year) result.year = this.formatNumber(this.year || 0);
+				if (params.month) result.month = this.formatNumber(this.month || 0);
+				if (params.day) result.day = this.formatNumber(this.day || 0);
+				if (params.hour) result.hour = this.formatNumber(this.hour || 0);
+				if (params.minute) result.minute = this.formatNumber(this.minute || 0);
+				if (params.second) result.second = this.formatNumber(this.second || 0);
+				if (params.timestamp) result.timestamp = this.getTimestamp();
 			} else if (this.mode == "region") {
-				if (this.params.province) result.province = provinces[this.province];
-				if (this.params.city) result.city = citys[this.province][this.city];
-				if (this.params.area) result.area = areas[this.province][this.city][this.area];
+				if (params.province) result.province = provinces[this.province];
+				if (params.city) result.city = citys[this.province][this.city];
+				if (params.area) result.area = areas[this.province][this.city][this.area];
 			} else if (this.mode == "selector") {
 				result = this.valueArr;
 			} else if (this.mode == "multiSelector") {
@@ -701,7 +741,7 @@ export default {
 			let firstTwoKey = addressText.substring(0, 2); //字符串开始的两个字符
 			// 所在省的下标
 			let provinceIndex = -1;
-			
+
 			for (let i = 0; i < provinces.length; i++) {
 				let { code, name } = provinces[i];
 				if (name.indexOf(firstTwoKey) == 0) {
@@ -711,12 +751,12 @@ export default {
 				}
 			}
 			if (provinceIndex == -1) return { code: -1, msg: `省份【${firstTwoKey}】没有找到，请输入正确的地址` };
-			
+
 			// 获取市
 			let citysArr = citys[provinceIndex];
 			// 所在市的下标
 			let cityIndex = -1;
-			
+
 			for (let i = 0; i < citysArr.length; i++) {
 				let { name, code } = citysArr[i];
 				// 除去最后一个 市 字
@@ -729,12 +769,12 @@ export default {
 				}
 			}
 			if (cityIndex == -1) return { code: -1, msg: `地级市没有找到，请输入正确的地址` };
-			
+
 			// 区
 			let areasArr = areas[provinceIndex][cityIndex];
 			// 所在区的下标
 			let areaIndex = -1;
-			
+
 			for (let i = 0; i < areasArr.length; i++) {
 				let { code, name } = areasArr[i];
 				// 区名(县名)一般为3个字，如江干区，有可能会简写成 江干
@@ -743,7 +783,7 @@ export default {
 				if (name.length > 2) reg += `|${name.substr(0, name.length - 1)}`;
 				// 查找地址中是否存在该区名
 				let areaRegExp = new RegExp(reg);
-				
+
 				if (addressText.search(areaRegExp) > -1) {
 					area = { code, name };
 					// 详情地址
@@ -767,7 +807,7 @@ export default {
 			};
 			return res;
 		},
-		
+
 		// 智能识别收货信息
 		addressDiscern(text) {
 			// 收货人姓名
@@ -805,7 +845,7 @@ export default {
 			}
 			let positionRes = this.regionDiscern(addressText);
 			if (positionRes.code !== 0) return positionRes;
-			
+
 			let res = {
 				code: 0,
 				msg: "ok",
@@ -818,7 +858,7 @@ export default {
 			return res;
 		},
 		stop(){
-			
+
 		}
 	}
 };

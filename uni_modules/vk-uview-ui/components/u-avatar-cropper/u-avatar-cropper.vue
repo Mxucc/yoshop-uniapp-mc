@@ -124,6 +124,9 @@ export default {
 	},
 	onLoad(option) {
 		let rectInfo = uni.getSystemInfoSync();
+		if (rectInfo.safeAreaInsets && rectInfo.safeAreaInsets.bottom) {
+			this.bottomNavHeight += rectInfo.safeAreaInsets.bottom;
+		}
 		this.width = rectInfo.windowWidth;
 		this.height = rectInfo.windowHeight - this.bottomNavHeight;
 		this.cropperOpt.width = this.width;
@@ -169,6 +172,9 @@ export default {
 				this.src = res.tempFilePaths[0];
 				//  获取裁剪图片资源后，给data添加src属性及其值
 				this.cropper.pushOrign(this.src);
+			},
+			fail: (err) => {
+				console.error('chooseImageErr: ', err);
 			}
 		});
 	},
@@ -248,6 +254,12 @@ export default {
 .cropper-buttons {
 	background-color: #000000;
 	color: #eee;
+}
+
+.safe-area-padding {
+	padding-bottom: 0;
+	padding-bottom: constant(safe-area-inset-bottom);
+	padding-bottom: env(safe-area-inset-bottom);
 }
 
 .cropper-wrapper {

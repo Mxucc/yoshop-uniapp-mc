@@ -239,7 +239,7 @@ export default {
 			}
 			return x1 + x2;
 		},
-		// #ifndef VUE3
+		// #ifdef VUE2
 		destroyed() {
 			this.cancelAnimationFrame(this.rAF);
 		},

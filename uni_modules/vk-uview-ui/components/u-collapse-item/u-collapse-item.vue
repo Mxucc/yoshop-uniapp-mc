@@ -143,7 +143,12 @@
 					show: this.isShow
 				})
 				// 只有在打开时才发出事件
-				if (this.isShow) this.parent && this.parent.onChange();
+				if (this.isShow) {
+					this.parent && this.parent.onChange();
+					this.$nextTick(() => {
+						this.queryRect();
+					});
+				}
 				this.$forceUpdate();
 			},
 			// 查询内容高度

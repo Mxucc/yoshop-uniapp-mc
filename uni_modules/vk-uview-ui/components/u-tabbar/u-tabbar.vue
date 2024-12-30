@@ -162,12 +162,14 @@ export default {
 		if (this.hideTabBar) uni.hideTabBar();
 		// 获取引入了u-tabbar页面的路由地址，该地址没有路径前面的"/"
 		let pages = getCurrentPages();
-		// 页面栈中的最后一个即为项为当前页面，route属性为页面路径
-		this.pageUrl = pages[pages.length - 1].route;
+		if (pages.length > 0) {
+			// 页面栈中的最后一个即为项为当前页面，route属性为页面路径
+			this.pageUrl = pages[pages.length - 1].route;
+		}
 	},
 	computed: {
 		valueCom() {
-			// #ifndef VUE3
+			// #ifdef VUE2
 			return this.value;
 			// #endif
 
@@ -242,8 +244,16 @@ export default {
 			this.$emit("change", index);
 			// 如果有配置pagePath属性，使用uni.switchTab进行跳转
 			if (this.list[index].pagePath) {
+				let url = this.list[index].pagePath;
 				uni.switchTab({
-					url: this.list[index].pagePath
+					url,
+					fail: (err) => {
+						if (err && err.errMsg && err.errMsg.indexOf("tabBar") > -1) {
+							uni.navigateTo({ url });
+						} else {
+							console.error(err);
+						}
+					}
 				});
 			} else {
 				// 如果配置了papgePath属性，将不会双向绑定v-model传入的value值

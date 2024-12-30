@@ -24,7 +24,7 @@
 		data() {
 			return {
 				tdStyle: {
-					
+
 				}
 			}
 		},
@@ -43,6 +43,7 @@
 				style.borderBottom = `solid 1px ${this.parent.borderColor}`;
 				style.borderRight = `solid 1px ${this.parent.borderColor}`;
 				style.color = this.parent.color;
+				Object.assign(style, this.parent.tdStyle);
 				this.tdStyle = style;
 			}
 		}

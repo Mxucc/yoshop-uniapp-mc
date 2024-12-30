@@ -48,10 +48,10 @@
 			<view class="u-calendar__bottom">
 				<view class="u-calendar__bottom__choose">
 					<text>{{mode == 'date' ? activeDate : startDate}}</text>
-					<text v-if="endDate">至{{endDate}}</text>
+					<text v-if="endDate">{{toText}}{{endDate}}</text>
 				</view>
 				<view class="u-calendar__bottom__btn">
-					<u-button :type="btnType" shape="circle" size="default" @click="btnFix(false)">确定</u-button>
+					<u-button :type="btnType" shape="circle" size="default" @click="btnFix(false)" :disabled="mode == 'range' && !endDate">{{ confirmText }}</u-button>
 				</view>
 			</view>
 		</view>
@@ -61,7 +61,7 @@
 	/**
 	 * calendar 日历
 	 * @description 此组件用于单个选择日期，范围选择日期等，日历被包裹在底部弹起的容器中。
-	 * @tutorial http://uviewui.com/components/calendar.html
+	 * @tutorial https://vkuviewdoc.fsq.pub/components/calendar.html
 	 * @property {String} mode 选择日期的模式，date-为单个日期，range-为选择日期范围
 	 * @property {Boolean} v-model 布尔值变量，用于控制日历的弹出与收起
 	 * @property {Boolean} safe-area-inset-bottom 是否开启底部安全区适配(默认false)
@@ -235,6 +235,22 @@
 				type: [Number, String],
 				default: 0
 			},
+			confirmText: {
+				type: String,
+				default: '确定'
+			},
+			toText: {
+				type: String,
+				default: '至'
+			},
+			yearText: {
+				type: String,
+				default: '年'
+			},
+			monthText: {
+				type: String,
+				default: '月'
+			},
 		},
 		data() {
 			return {
@@ -267,7 +283,7 @@
 		},
 		computed: {
 			valueCom() {
-				// #ifndef VUE3
+				// #ifdef VUE2
 				return this.value;
 				// #endif
 
@@ -411,7 +427,7 @@
 				this.daysArr=this.generateArray(1,this.days)
 				this.weekday = this.getWeekday(this.year, this.month);
 				this.weekdayArr=this.generateArray(1,this.weekday)
-				this.showTitle = `${this.year}年${this.month}月`;
+				this.showTitle = `${this.year}${this.yearText}${this.month}${this.monthText}`;
 				if (this.isChange && this.mode == 'date') {
 					this.btnFix(true);
 				}
