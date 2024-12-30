@@ -9,8 +9,6 @@
   import * as Api from '@/api/page'
   import Page from '@/components/page'
 
-  const App = getApp()
-
   export default {
     components: {
       Page
@@ -67,7 +65,9 @@
         })
         // 设置navbar标题、颜色
         uni.setNavigationBarColor({
+          // #ifndef MP-ALIPAY
           frontColor: page.style.titleTextColor === 'white' ? '#ffffff' : '#000000',
+          // #endif
           backgroundColor: page.style.titleBackgroundColor
         })
       },
@@ -92,7 +92,7 @@
       const { page } = app
       return {
         title: page.params.shareTitle,
-        path: "/pages/index/index?" + app.$getShareUrlParams()
+        path: "/pages/custom/index?" + app.$getShareUrlParams({ pageId: app.options.pageId })
       }
     },
 
@@ -106,7 +106,7 @@
       const { page } = app
       return {
         title: page.params.shareTitle,
-        path: "/pages/index/index?" + app.$getShareUrlParams()
+        path: "/pages/custom/index?" + app.$getShareUrlParams({ pageId: app.options.pageId })
       }
     }
 
