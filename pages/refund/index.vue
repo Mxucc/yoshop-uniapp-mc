@@ -2,10 +2,8 @@
   <view class="container" :style="appThemeStyle">
     <mescroll-body ref="mescrollRef" :sticky="true" @init="mescrollInit" :down="{ native: true }" @down="downCallback" :up="upOption"
       @up="upCallback">
-
       <!-- tab栏 -->
       <u-tabs :list="tabs" :is-scroll="false" v-model="curTab" :active-color="appTheme.mainBg" :duration="0.2" @change="onChangeTab" />
-
       <!-- 退款/售后单 -->
       <view class="widget-list">
         <view class="widget-detail" v-for="(item, index) in list.data" :key="index">
@@ -44,9 +42,7 @@
           </view>
         </view>
       </view>
-
     </mescroll-body>
-
   </view>
 </template>
 
@@ -205,21 +201,11 @@
 
       .goods-name {
         margin-bottom: 10rpx;
+        min-height: 68rpx;
+        line-height: 1.3;
       }
 
-
-      .goods-props {
-        margin-top: 14rpx;
-        color: #ababab;
-        font-size: 24rpx;
-        overflow: hidden;
-
-        .goods-props-item {
-          padding: 4rpx 16rpx;
-          border-radius: 12rpx;
-          background-color: #fcfcfc;
-        }
-      }
+      .goods-props {        margin-top: 14rpx;        color: #ababab;        font-size: 24rpx;        overflow: hidden;        .goods-props-item {          padding: 4rpx 16rpx;          border-radius: 12rpx;          background-color: #fcfcfc;        }      }
 
     }
 

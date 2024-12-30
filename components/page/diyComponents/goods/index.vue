@@ -289,7 +289,8 @@
             font-size: 26rpx;
             color: #000;
             margin-bottom: 8rpx;
-            height: 68rpx;
+            min-height: 68rpx;
+            line-height: 1.3;
           }
 
           .goods-selling {
