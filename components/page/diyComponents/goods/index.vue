@@ -1,92 +1,129 @@
 <template>
   <!-- 商品组 -->
-  <view class="diy-goods" :style="{ background: itemStyle.background }">
-    <view class="goods-list" :class="[`display__${itemStyle.display}`, `column__${itemStyle.column}`]">
-      <scroll-view :scroll-x="itemStyle.display === 'slide'">
-        <view class="goods-item" v-for="(dataItem, index) in dataList" :key="index" @click="onTargetGoods(dataItem.goods_id)">
-
+  <scroll-view class="scroll-view" :scroll-x="itemStyle.display === 'slide'" :style="{ background: itemStyle.background }">
+    <view class="diy-goods">
+      <view class="goods-list" :class="[`display-${itemStyle.display}`, `column-${itemStyle.column}`]"
+        :style="{ padding: `${itemStyle.paddingY * 2}rpx ${itemStyle.paddingX * 2}rpx` }">
+        <view class="goods-item" v-for="(dataItm, index) in dataList" :key="index" :class="[`display-${itemStyle.cardType}`]"
+          :style="{ marginBottom: `${itemStyle.itemMargin * 2}rpx`, borderRadius: `${itemStyle.borderRadius * 2}rpx` }"
+          @click="handleGoodsItem(dataItm.goods_id)">
           <!-- 单列商品 -->
-          <block v-if="itemStyle.column === 1">
-            <view class="dis-flex">
-              <!-- 商品图片 -->
+          <template v-if="itemStyle.column === 1">
+            <view class="flex">
               <view class="goods-item-left">
-                <image class="image" :src="dataItem.goods_image"></image>
+                <image class="image" :src="dataItm.goods_image"></image>
               </view>
               <view class="goods-item-right">
-                <!-- 商品名称 -->
-                <view v-if="itemStyle.show.includes('goodsName')" class="goods-name">
-                  <text class="twoline-hide">{{ dataItem.goods_name }}</text>
-                </view>
-                <view class="goods-item-desc">
-                  <!-- 商品卖点 -->
-                  <view v-if="itemStyle.show.includes('sellingPoint')" class="desc-selling-point dis-flex">
-                    <text class="oneline-hide">{{ dataItem.selling_point }}</text>
+                <view class="goods-info">
+                  <view v-if="inArray('goodsName', itemStyle.show)" class="goods-name twoline-hide">{{ dataItm.goods_name }}</view>
+                  <view v-if="inArray('sellingPoint', itemStyle.show)" class="goods-selling">
+                    <text class="selling oneline-hide" :style="{ color: itemStyle.sellingColor }">{{ dataItm.selling_point }}</text>
                   </view>
-                  <!-- 商品销量 -->
-                  <view v-if="itemStyle.show.includes('goodsSales')" class="desc-goods-sales dis-flex">
-                    <text>已售{{ dataItem.goods_sales }}件</text>
+                  <view v-if="inArray('goodsSales', itemStyle.show)" class="goods-sales oneline-hide">
+                    <text class="sales">已售{{ dataItm.goods_sales }}</text>
+                    <!-- <text class="line">|</text>
+                                      <text>惊艳度100%</text>-->
                   </view>
-                  <!-- 商品价格 -->
-                  <view class="desc-footer">
-                    <text v-if="itemStyle.show.includes('goodsPrice')" class="price-x">¥{{ dataItem.goods_price_min }}</text>
-                    <text class="price-y col-9"
-                      v-if="itemStyle.show.includes('linePrice') && dataItem.line_price_min > 0">¥{{ dataItem.line_price_min }}</text>
+                  <view class="footer">
+                    <view class="goods-price oneline-hide" :style="{ color: itemStyle.priceColor }">
+                      <template v-if="inArray('goodsPrice', itemStyle.show)">
+                        <text class="unit">￥</text>
+                        <text class="value">{{ dataItm.goods_price_min }}</text>
+                        <!-- <text class="unit2">到手价</text> -->
+                      </template>
+                      <text v-if="inArray('linePrice', itemStyle.show)" class="line-price">
+                        <text class="unit">￥</text>
+                        <text class="value">{{ dataItm.line_price_min }}</text>
+                      </text>
+                    </view>
+                    <view v-show="inArray('cartBtn', itemStyle.show) && itemStyle.column < 3" class="action">
+                      <view class="btn-cart" :style="{ background: itemStyle.btnCartColor, color: itemStyle.btnFontColor }"
+                        @click.stop="handleAddCart(dataItm)">
+                        <text class="cart-icon iconfont icon-plus"></text>
+                      </view>
+                    </view>
                   </view>
                 </view>
               </view>
             </view>
-          </block>
-          <!-- 多列商品 -->
-          <block v-else>
-            <!-- 商品图片 -->
+          </template>
+          <!-- 两列/三列 -->
+          <template v-else>
             <view class="goods-image">
-              <image class="image" mode="aspectFill" :src="dataItem.goods_image"></image>
+              <image class="image" mode="aspectFill" :src="dataItm.goods_image"></image>
             </view>
-            <view class="detail">
-              <!-- 商品标题 -->
-              <view v-if="itemStyle.show.includes('goodsName')" class="goods-name twoline-hide">
-                <text class="twoline-hide">{{ dataItem.goods_name }}</text>
+            <view class="goods-info">
+              <view v-if="inArray('goodsName', itemStyle.show)" class="goods-name twoline-hide">{{ dataItm.goods_name }}</view>
+              <view v-if="inArray('sellingPoint', itemStyle.show)" class="goods-selling">
+                <text class="selling oneline-hide" :style="{ color: itemStyle.sellingColor }">{{ dataItm.selling_point }}</text>
               </view>
-              <!-- 商品价格 -->
-              <view class="detail-price oneline-hide">
-                <text v-if="itemStyle.show.includes('goodsPrice')" class="goods-price f-30 col-m">￥{{ dataItem.goods_price_min }}</text>
-                <text v-if="itemStyle.show.includes('linePrice') && dataItem.line_price_min > 0"
-                  class="line-price col-9 f-24">￥{{ dataItem.line_price_min }}</text>
+              <view v-if="inArray('goodsSales', itemStyle.show)" class="goods-sales oneline-hide">
+                <text class="sales">已售{{ dataItm.goods_sales }}</text>
+                <!-- <text class="line">|</text>
+                            <text>惊艳度100%</text>-->
+              </view>
+              <view class="footer">
+                <view v-if="inArray('goodsPrice', itemStyle.show)" class="goods-price oneline-hide"
+                  :style="{ color: itemStyle.priceColor }">
+                  <text class="unit">￥</text>
+                  <text class="value">{{ dataItm.goods_price_min }}</text>
+                  <!-- <text class="unit2">到手价</text> -->
+                  <text v-if="inArray('linePrice', itemStyle.show)" class="line-price">
+                    <text class="unit">￥</text>
+                    <text class="value">{{ dataItm.line_price_min }}</text>
+                  </text>
+                </view>
+                <view v-show="inArray('cartBtn', itemStyle.show) && itemStyle.column < 3" class="action">
+                  <view class="btn-cart" :style="{ background: itemStyle.btnCartColor, color: itemStyle.btnFontColor }"
+                    @click.stop="handleAddCart(dataItm)">
+                    <text class="cart-icon iconfont icon-plus"></text>
+                  </view>
+                </view>
               </view>
             </view>
-          </block>
-
+          </template>
         </view>
-      </scroll-view>
+      </view>
     </view>
-  </view>
+    <!-- 加入购物车组件 -->
+    <AddCartPopup ref="AddCartPopup" @addCart="onAddCart" />
+  </scroll-view>
 </template>
 
 <script>
+  import { inArray } from '@/utils/util'
+  import { setCartTabBadge } from '@/core/app'
+  import AddCartPopup from '@/components/add-cart-popup'
+
   export default {
-    name: "Goods",
-    /**
-     * 组件的属性列表
-     * 用于组件自定义设置
-     */
+    components: {
+      AddCartPopup
+    },
     props: {
       itemIndex: String,
       itemStyle: Object,
       params: Object,
       dataList: Array
     },
-
-    /**
-     * 组件的方法列表
-     * 更新属性和数据的方法与更新页面数据的方法类似
-     */
+    data() {
+      return { inArray }
+    },
     methods: {
 
-      /**
-       * 跳转商品详情页
-       */
-      onTargetGoods(goodsId) {
+      // 跳转商品详情页
+      handleGoodsItem(goodsId) {
         this.$navTo(`pages/goods/detail`, { goodsId })
+      },
+
+      // 点击加入购物车
+      handleAddCart(item) {
+        console.log('handleAddCart', this.$refs.AddCartPopup)
+        this.$refs.AddCartPopup.handle(item)
+      },
+
+      // 更新购物车角标
+      onAddCart(total) {
+        setCartTabBadge()
       }
 
     }
@@ -96,111 +133,79 @@
 
 <style lang="scss" scoped>
   .diy-goods {
+    // 目的是解决划线价横线位置不对
+    // display: flex;
+    // flex-direction: column;
+    overflow: hidden;
+
     .goods-list {
-      padding: 4rpx;
-      box-sizing: border-box;
+      margin-bottom: -10px;
 
-      .goods-item {
-        box-sizing: border-box;
-        padding: 6rpx;
+      // 横向滑动
+      &.display-slide {
+        display: flex;
+        width: max-content;
 
-        .goods-image {
-          position: relative;
-          width: 100%;
-          height: 0;
-          padding-bottom: 100%;
-          overflow: hidden;
-          background: #fff;
+        .goods-item {
+          flex-shrink: 1;
+          margin-right: 20rpx !important;
 
-          &:after {
-            content: '';
-            display: block;
-            margin-top: 100%;
-          }
-
-          .image {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            -o-object-fit: cover;
-            object-fit: cover;
+          &:last-child {
+            margin-right: 0 !important;
           }
         }
 
-        .detail {
-          padding: 8rpx;
-          background: #fff;
-
-          .goods-name {
-            min-height: 68rpx;
-            line-height: 1.3;
-            white-space: normal;
-            color: #484848;
-            font-size: 26rpx;
-            margin-bottom: 4rpx;
+        // 双列
+        &.column-2 {
+          .goods-item {
+            width: 160px;
           }
+        }
 
-          .detail-price {
-            .goods-price {
-              margin-right: 8rpx;
-            }
-
-            .line-price {
-              text-decoration: line-through;
-            }
+        // 3列
+        &.column-3 {
+          .goods-item {
+            width: 220px;
           }
         }
       }
 
-      &.display__slide {
-        white-space: nowrap;
-        font-size: 0;
-
-        .goods-item {
-          display: inline-block;
-        }
+      // 列表平铺
+      &.display-list {
+        display: flex;
+        flex-wrap: wrap;
       }
 
-      &.display__list {
-        .goods-item {
-          float: left;
-        }
-      }
+      // 单列
+      &.column-1 {
+        margin-bottom: 0;
 
-      &.column__2 {
         .goods-item {
-          width: 50%;
-        }
-      }
-
-      &.column__3 {
-        .goods-item {
-          width: 33.33333%;
-        }
-      }
-
-      &.column__1 {
-        .goods-item {
-          width: 100%;
-          height: 280rpx;
           margin-bottom: 12rpx;
           padding: 20rpx;
           box-sizing: border-box;
           background: #fff;
-          line-height: 1.6;
+          flex-basis: 100%;
+          margin-right: 0;
 
           &:last-child {
-            margin-bottom: 0;
+            margin-bottom: 0 !important;
           }
+
+          .goods-info {
+            padding: 0;
+
+            .goods-name {
+              font-size: 27rpx;
+            }
+          }
+
         }
 
+        // 商品图片
         .goods-item-left {
-          display: flex;
-          width: 40%;
           background: #fff;
-          align-items: center;
+          margin-right: 20rpx;
 
           .image {
             display: block;
@@ -211,46 +216,161 @@
 
         .goods-item-right {
           position: relative;
-          width: 60%;
+          flex: 1;
+          width: 0; // 解决文字超出无法隐藏
+        }
+
+      }
+
+      // 2列
+      &.column-2 {
+        .goods-item {
+          flex-basis: 48.6%;
+
+          &:nth-child(2n) {
+            margin-right: 0;
+          }
+        }
+
+      }
+
+      // 3列
+      &.column-3 {
+        .goods-item {
+          flex-basis: 31.46666%;
+
+          &:nth-child(3n) {
+            margin-right: 0;
+          }
+        }
+      }
+
+      // 商品内容
+      .goods-item {
+        flex-shrink: 0;
+        background-color: #fff;
+        flex: 0 1 48.6%;
+        margin-right: 2.8%;
+        border-radius: 16rpx;
+        overflow: hidden;
+        margin-bottom: 20rpx;
+
+        &.display-card {
+          box-shadow: 0 4rpx 10rpx rgba(0, 0, 0, 0.07);
+        }
+
+        .goods-image {
+          position: relative;
+          width: 100%;
+          height: 0;
+          padding-bottom: 100%;
+          overflow: hidden;
+
+          &:after {
+            content: '';
+            display: block;
+            margin-top: 100%;
+          }
+
+          .image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+
+        .goods-info {
+          padding: 20rpx;
 
           .goods-name {
-            margin-top: 20rpx;
-            min-height: 68rpx;
-            line-height: 1.3;
-            white-space: normal;
-            color: #484848;
             font-size: 26rpx;
-          }
-        }
-
-        .goods-item-desc {
-          margin-top: 8rpx;
-        }
-
-        .desc-selling-point {
-          width: 400rpx;
-          font-size: 24rpx;
-          color: #e49a3d;
-        }
-
-        .desc-goods-sales {
-          color: #999;
-          font-size: 24rpx;
-        }
-
-        .desc-footer {
-          font-size: 24rpx;
-
-          .price-x {
-            margin-right: 16rpx;
-            color: $main-bg;
-            font-size: 30rpx;
+            color: #000;
+            margin-bottom: 8rpx;
+            height: 68rpx;
           }
 
-          .price-y {
-            text-decoration: line-through;
+          .goods-selling {
+            display: flex; // 解决文字超出无法隐藏
+            font-size: 24rpx;
+            margin-bottom: 8rpx;
           }
+
+          .goods-sales {
+            font-size: 24rpx;
+            color: #959595;
+            margin-bottom: 8rpx;
+
+            .line {
+              margin: 0 8rpx;
+            }
+          }
+
         }
+
+        .footer {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          .goods-price {
+            position: relative;
+            color: #ff1051;
+
+            .unit {
+              font-size: 20rpx;
+            }
+
+            .value {
+              font-size: 30rpx;
+            }
+
+            .unit2 {
+              margin-left: 4rpx;
+              font-size: 22rpx;
+            }
+
+            .line-price {
+              margin-left: 6rpx;
+              color: #959595;
+
+              .unit {
+                text-decoration: line-through;
+                font-size: 22rpx;
+              }
+
+              .value {
+                text-decoration: line-through;
+                font-size: 22rpx;
+              }
+            }
+
+          }
+
+          .action {
+
+            .btn-cart {
+              width: 44rpx;
+              height: 44rpx;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              background-color: #27c29a;
+              color: #fff;
+              border-radius: 50%;
+
+              .cart-icon {
+                font-size: 20rpx;
+              }
+            }
+
+          }
+
+        }
+
       }
     }
   }

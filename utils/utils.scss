@@ -1,6 +1,12 @@
-.container,
-input {
-  font-family: PingFang-Medium, PingFangSC-Regular, Heiti, Heiti SC, DroidSans, DroidSansFallback, 'Microsoft YaHei', sans-serif;
+.container, input {
+  font-family: PingFang-Medium,
+                 PingFangSC-Regular,
+                 Heiti,
+                 Heiti SC,
+                 DroidSans,
+                 DroidSansFallback,
+                 "Microsoft YaHei",
+                 sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -18,6 +24,10 @@ input {
 
 .dis-block {
   display: block;
+}
+
+.flex {
+  display: flex;
 }
 
 .dis-flex {
@@ -107,7 +117,7 @@ input {
 
 .clearfix::after {
   clear: both;
-  content: ' ';
+  content: " ";
   display: table;
 }
 
@@ -253,6 +263,7 @@ input {
 }
 
 .oneline-hide {
+  // 需设置一个固定宽度 width
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
