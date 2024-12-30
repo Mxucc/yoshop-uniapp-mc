@@ -96,7 +96,7 @@
     align-items: center;
     padding-top: 30rpx;
     box-shadow: 0 -12rpx 30rpx -6rpx rgba(151, 151, 151, 0.1);
-    
+
     .control {
       display: flex;
       justify-content: center;
@@ -484,5 +484,34 @@
       color: $main-bg;
       border-bottom: 2px solid $main-bg;
     }
+  }
+}
+
+// 自定义radio
+.my-radio {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34rpx;
+  height: 34rpx;
+  text-align: center;
+  border: 1px solid #c8c9cc;
+  transition-duration: 0.2s;
+  border-radius: 100%;
+  color: transparent;
+
+  &.checked {
+    background-color: $main-bg;
+    border-color: $main-bg;
+    color: #fff;
+  }
+
+  &.disabled {
+    background-color: #ebedf0;
+    border-color: #c8c9cc;
+  }
+
+  &.disabled-checked {
+    color: #c8c9cc !important;
   }
 }

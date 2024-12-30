@@ -197,9 +197,9 @@
                     </view>
                   </view>
                   <view class="coupon-right">
-                    <u-radio-group v-model="selectCouponId">
-                      <u-radio :name="item.user_coupon_id" :active-color="appTheme.mainBg"></u-radio>
-                    </u-radio-group>
+                    <view class="my-radio" :class="{ checked: selectCouponId == item.user_coupon_id }">
+                      <u-icon name="checkbox-mark" :size="20" />
+                    </view>
                   </view>
                 </view>
                 <!-- 优惠券描述 -->

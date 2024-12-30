@@ -1,12 +1,6 @@
-.container, input {
-  font-family: PingFang-Medium,
-                 PingFangSC-Regular,
-                 Heiti,
-                 Heiti SC,
-                 DroidSans,
-                 DroidSansFallback,
-                 "Microsoft YaHei",
-                 sans-serif;
+.container,
+input {
+  font-family: PingFang-Medium, PingFangSC-Regular, Heiti, Heiti SC, DroidSans, DroidSansFallback, 'Microsoft YaHei', sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -113,7 +107,7 @@
 
 .clearfix::after {
   clear: both;
-  content: " ";
+  content: ' ';
   display: table;
 }
 
@@ -262,6 +256,9 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  text {
+    white-space: nowrap;
+  }
 }
 
 .twoline-hide {
