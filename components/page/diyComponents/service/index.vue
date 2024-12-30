@@ -1,6 +1,6 @@
 <template>
   <!-- 在线客服 -->
-  <view v-if="isShow" class="diy-service" :style="{ '--right': `${right}px`, '--bottom': `${bottom}px` }">
+  <view v-if="isShow" class="diy-service" :style="{ '--right': `${itemStyle.right * 2}rpx`, '--bottom': `${itemStyle.bottom * 2}rpx` }">
     <!-- 拨打电话 -->
     <block v-if="params.type === 'phone'">
       <view class="service-icon" @click="onMakePhoneCall">
@@ -20,7 +20,7 @@
 
 <script>
   import CustomerBtn from '@/components/customer-btn'
-  import { rpx2px } from '@/utils/util'
+  // import { rpx2px } from '@/utils/util'
   import SettingModel from '@/common/model/Setting'
 
   export default {
@@ -36,14 +36,14 @@
         isShow: false
       }
     },
-    computed: {
-      right() {
-        return rpx2px(2 * this.itemStyle.right)
-      },
-      bottom() {
-        return rpx2px(2 * this.itemStyle.bottom)
-      }
-    },
+    // computed: {
+    //   right() {
+    //     return rpx2px(2 * this.itemStyle.right)
+    //   },
+    //   bottom() {
+    //     return rpx2px(2 * this.itemStyle.bottom)
+    //   }
+    // },
     async created() {
       if (this.params.type === 'phone') {
         this.isShow = true

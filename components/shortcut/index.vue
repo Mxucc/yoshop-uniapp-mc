@@ -1,23 +1,23 @@
 <template>
-  <view class="shortcut" :style="{ '--right': `${rightPx}px`, '--bottom': `${bottomPx}px` }">
+  <view class="shortcut" :style="{ '--right': `${rightPx}rpx`, '--bottom': `${bottomPx}rpx` }">
     <!-- 首页 -->
-    <view class="nav-item" :class="[isShow ? 'show_80' : (transparent ? '' : 'hide_80')]" @click="onTargetPage(0)">
+    <view class="nav-item" :class="[isShow ? 'show_80' : (transparent ? '' : 'hide_80')]" @click="handleItem(0)">
       <text class="iconfont icon-home"></text>
     </view>
     <!-- 分类页 -->
-    <view class="nav-item" :class="[isShow ? 'show_60' : (transparent ? '' : 'hide_60')]" @click="onTargetPage(1)">
+    <view class="nav-item" :class="[isShow ? 'show_60' : (transparent ? '' : 'hide_60')]" @click="handleItem(1)">
       <text class="iconfont icon-cate"></text>
     </view>
     <!-- 购物车 -->
-    <view class="nav-item" :class="[isShow ? 'show_40' : (transparent ? '' : 'hide_40')]" @click="onTargetPage(2)">
+    <view class="nav-item" :class="[isShow ? 'show_40' : (transparent ? '' : 'hide_40')]" @click="handleItem(2)">
       <text class="iconfont icon-cart"></text>
     </view>
     <!-- 个人中心 -->
-    <view class="nav-item" :class="[isShow ? 'show_20' : (transparent ? '' : 'hide_20')]" @click="onTargetPage(3)">
+    <view class="nav-item" :class="[isShow ? 'show_20' : (transparent ? '' : 'hide_20')]" @click="handleItem(3)">
       <text class="iconfont icon-profile"></text>
     </view>
     <!-- 显示隐藏开关 -->
-    <view class="nav-item nav-item__switch" :class="{ shortcut_click_show: isShow }" @click="onToggleShow()">
+    <view class="nav-item nav-item__switch" :class="{ shortcut_click_show: isShow }" @click="handleToggleShow()">
       <text class='iconfont icon-daohang'></text>
     </view>
   </view>
@@ -27,11 +27,6 @@
   import { getTabBarLinks } from '@/core/app'
 
   export default {
-
-    /**
-     * 组件的属性列表
-     * 用于组件自定义设置
-     */
     props: {
       right: {
         type: Number,
@@ -42,7 +37,6 @@
         default: 100
       }
     },
-
     data() {
       return {
         // 弹窗显示控制
@@ -50,34 +44,17 @@
         transparent: true
       }
     },
-
-    computed: {
-      rightPx() {
-        return uni.upx2px(this.right)
-      },
-      bottomPx() {
-        return uni.upx2px(this.bottom)
-      }
-    },
-
     methods: {
 
-
-
-
-      /**
-       * 导航菜单切换事件
-       */
-      onToggleShow() {
+      // 导航菜单切换事件
+      handleToggleShow() {
         const app = this
         app.isShow = !app.isShow
         app.transparent = false
       },
 
-      /**
-       * 导航页面跳转
-       */
-      onTargetPage(index = 0) {
+      // 导航页面跳转
+      handleItem(index = 0) {
         const tabLinks = getTabBarLinks()
         this.$navTo(tabLinks[index])
       }
@@ -87,7 +64,7 @@
 </script>
 
 <style lang="scss" scoped>
-  /* 快捷导航 */
+  // 快捷导航
   .shortcut {
     position: fixed;
     right: calc(var(--window-right) + var(--right));
@@ -99,7 +76,7 @@
     border-radius: 50%;
   }
 
-  /* 导航菜单元素 */
+  // 导航菜单元素
   .nav-item {
     position: absolute;
     bottom: 0;
@@ -120,8 +97,7 @@
     font-size: 40rpx;
   }
 
-  /* 导航开关 */
-
+  // 导航开关
   .nav-item__switch {
     opacity: 1;
   }
@@ -131,8 +107,7 @@
     background: #ff5454;
   }
 
-  /* 显示动画 */
-
+  // 显示动画
   .show_80 {
     bottom: 384rpx;
     animation: show_80 0.3s forwards;
@@ -209,8 +184,7 @@
     }
   }
 
-  /* 隐藏动画 */
-
+  // 隐藏动画
   .hide_80 {
     bottom: 0;
     animation: hide_80 0.3s;

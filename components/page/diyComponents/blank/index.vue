@@ -1,6 +1,6 @@
 <template>
   <!-- 辅助空白 -->
-  <view class="diy-blank" :style="{ height: `${itemStyle.height}px`, background: itemStyle.background }">
+  <view class="diy-blank" :style="{ height: `${itemStyle.height * 2}rpx`, background: itemStyle.background }">
   </view>
 </template>
 

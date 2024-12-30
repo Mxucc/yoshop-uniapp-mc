@@ -1,7 +1,7 @@
 <template>
   <!-- 富文本 -->
   <view class="diy-richText"
-    :style="{ padding: `${itemStyle.paddingTop}px ${itemStyle.paddingLeft}px`, background: itemStyle.background }">
+    :style="{ padding: `${itemStyle.paddingTop * 2}rpx ${itemStyle.paddingLeft * 2}rpx`, background: itemStyle.background }">
     <mp-html :content="params.content" />
   </view>
 </template>

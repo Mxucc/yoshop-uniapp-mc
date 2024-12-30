@@ -1,9 +1,9 @@
 <template>
   <!-- 图片橱窗 -->
-  <view class="diy-window" :style="{ background: itemStyle.background, padding: `${itemStyle.paddingTop}px ${itemStyle.paddingLeft}px` }">
+  <view class="diy-window" :style="{ background: itemStyle.background, padding: `${itemStyle.paddingTop * 2}rpx ${itemStyle.paddingLeft * 2}rpx` }">
     <!-- matrix -->
     <view v-if="itemStyle.layout > -1" class="data-list" :class="[`avg-sm-${itemStyle.layout}`]">
-      <view v-for="(dataItem, index) in dataList" :key="index" class="data-item" :style="{ padding: `${itemStyle.paddingTop}px ${itemStyle.paddingLeft}px` }">
+      <view v-for="(dataItem, index) in dataList" :key="index" class="data-item" :style="{ padding: `${itemStyle.paddingTop * 2}rpx ${itemStyle.paddingLeft * 2}rpx` }">
         <view class="item-image" @click="onLink(dataItem.link)">
           <image class="image" mode="widthFix" :src="dataItem.imgUrl"></image>
         </view>
@@ -11,18 +11,18 @@
     </view>
     <!-- display -->
     <view v-else class="display">
-      <view class="display-left" :style="{ padding: `${itemStyle.paddingTop}px ${itemStyle.paddingLeft}px` }">
+      <view class="display-left" :style="{ padding: `${itemStyle.paddingTop * 2}rpx ${itemStyle.paddingLeft * 2}rpx` }">
         <image class="image" @click="onLink(dataList[0].link)" :src="dataList[0].imgUrl"></image>
       </view>
       <view class="display-right">
-        <view v-if="dataList.length >= 2 " class="display-right1" :style="{ padding: `${itemStyle.paddingTop}px ${itemStyle.paddingLeft}px` }">
+        <view v-if="dataList.length >= 2 " class="display-right1" :style="{ padding: `${itemStyle.paddingTop * 2}rpx ${itemStyle.paddingLeft * 2}rpx` }">
           <image class="image" @click="onLink(dataList[1].link)" :src="dataList[1].imgUrl"></image>
         </view>
         <view class="display-right2">
-          <view v-if="dataList.length >= 3 " class="left" :style="{ padding: `${itemStyle.paddingTop}px ${itemStyle.paddingLeft}px` }">
+          <view v-if="dataList.length >= 3 " class="left" :style="{ padding: `${itemStyle.paddingTop * 2}rpx ${itemStyle.paddingLeft * 2}rpx` }">
             <image class="image" @click="onLink(dataList[2].link)" :src="dataList[2].imgUrl"></image>
           </view>
-          <view v-if="dataList.length >= 4 " class="right" :style="{ padding: `${itemStyle.paddingTop}px ${itemStyle.paddingLeft}px` }">
+          <view v-if="dataList.length >= 4 " class="right" :style="{ padding: `${itemStyle.paddingTop * 2}rpx ${itemStyle.paddingLeft * 2}rpx` }">
             <image class="image" @click="onLink(dataList[3].link)" :src="dataList[3].imgUrl"></image>
           </view>
         </view>

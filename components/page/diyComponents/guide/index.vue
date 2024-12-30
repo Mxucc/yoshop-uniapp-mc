@@ -1,7 +1,7 @@
 <template>
   <!-- 辅助线 -->
-  <view class="diy-guide" :style="{ padding: `${itemStyle.paddingTop}px 0`, background: itemStyle.background }">
-    <view class="line" :style="{ borderTop: `${itemStyle.lineHeight}px ${itemStyle.lineStyle} ${itemStyle.lineColor}` }">
+  <view class="diy-guide" :style="{ padding: `${itemStyle.paddingTop * 2}rpx 0`, background: itemStyle.background }">
+    <view class="line" :style="{ borderTop: `${itemStyle.lineHeight * 2}rpx ${itemStyle.lineStyle} ${itemStyle.lineColor}` }">
     </view>
   </view>
 </template>

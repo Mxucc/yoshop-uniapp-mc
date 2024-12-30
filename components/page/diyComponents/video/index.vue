@@ -1,7 +1,7 @@
 <template>
   <!-- 视频组 -->
-  <view class="diy-video" :style="{ padding: `${itemStyle.paddingTop}px 0` }">
-    <video class="video" :style="{ height: `${itemStyle.height}px` }" :src="params.videoUrl" :poster="params.poster"
+  <view class="diy-video" :style="{ padding: `${itemStyle.paddingTop * 2}rpx 0` }">
+    <video class="video" :style="{ height: `${itemStyle.height * 2}rpx` }" :src="params.videoUrl" :poster="params.poster"
       :autoplay="params.autoplay == 1" controls></video>
   </view>
 </template>

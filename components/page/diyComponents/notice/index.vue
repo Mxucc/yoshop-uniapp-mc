@@ -1,6 +1,6 @@
 <template>
   <!-- 店铺公告 -->
-  <view class="diy-notice" :style="{ paddingTop: `${itemStyle.paddingTop}px`, paddingBottom: `${itemStyle.paddingTop}px` }"
+  <view class="diy-notice" :style="{ paddingTop: `${itemStyle.paddingTop * 2}rpx`, paddingBottom: `${itemStyle.paddingTop * 2}rpx` }"
     @click="onLink(params.link)">
     <u-notice-bar padding="10rpx 24rpx" :volume-icon="params.showIcon" :autoplay="params.scrollable"
       :bg-color="itemStyle.background" :color="itemStyle.textColor" :list="[params.text]"></u-notice-bar>

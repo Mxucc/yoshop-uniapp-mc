@@ -1,10 +1,10 @@
 <template>
   <!-- 优惠券组 -->
-  <view v-if="couponList.length" class="diy-coupon" :style="{ padding: `${itemStyle.paddingTop}px 0`, background: itemStyle.background }">
+  <view v-if="couponList.length" class="diy-coupon" :style="{ padding: `${itemStyle.paddingTop * 2}rpx 0`, background: itemStyle.background }">
     <scroll-view :scroll-x="true">
       <view class="coupon-wrapper">
         <view class="coupon-item" :class="{ disable: !dataItem.state.value }" v-for="(dataItem, index) in couponList" :key="index"
-          :style="{ marginRight: `${itemStyle.marginRight}px` }">
+          :style="{ marginRight: `${itemStyle.marginRight * 2}rpx` }">
           <text class="before" :style="{ background: itemStyle.background }"></text>
           <view class="left-content" :style="{ background: itemStyle.couponBgColor, color: itemStyle.couponTextColor }">
             <view class="content-top">

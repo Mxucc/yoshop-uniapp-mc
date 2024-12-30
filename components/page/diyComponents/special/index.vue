@@ -1,6 +1,6 @@
 <template>
   <!-- 头条快报 -->
-  <view class="diy-special" :style="{ padding: `${itemStyle.paddingTop}px 0`, background: itemStyle.background }">
+  <view class="diy-special" :style="{ padding: `${itemStyle.paddingTop * 2}rpx 0`, background: itemStyle.background }">
     <view class="special-left" @click="handleNavMore()">
       <image class="image" mode="widthFix" :src="params.image" />
     </view>
