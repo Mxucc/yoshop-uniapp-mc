@@ -34,7 +34,7 @@
                         <text class="value">{{ dataItm.goods_price_min }}</text>
                         <!-- <text class="unit2">到手价</text> -->
                       </template>
-                      <text v-if="inArray('linePrice', itemStyle.show)" class="line-price">
+                      <text v-if="inArray('linePrice', itemStyle.show) && dataItm.line_price_min > 0" class="line-price">
                         <text class="unit">￥</text>
                         <text class="value">{{ dataItm.line_price_min }}</text>
                       </text>
@@ -73,7 +73,7 @@
                   <text class="unit">￥</text>
                   <text class="value">{{ dataItm.goods_price_min }}</text>
                   <!-- <text class="unit2">到手价</text> -->
-                  <text v-if="inArray('linePrice', itemStyle.show)" class="line-price">
+                  <text v-if="inArray('linePrice', itemStyle.show) && dataItm.line_price_min > 0" class="line-price">
                     <text class="unit">￥</text>
                     <text class="value">{{ dataItm.line_price_min }}</text>
                   </text>
