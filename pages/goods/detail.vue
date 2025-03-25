@@ -71,8 +71,23 @@
       <view class="item-title b-f">
         <text>商品描述</text>
       </view>
-      <view v-if="goods.content != ''" class="goods-content__detail b-f">
-        <mp-html :content="goods.content" />
+      <view v-if="goods.content && goods.content.length" class="goods-content__detail b-f">
+        <!-- 标签栏 -->
+        <view class="content-tabs">
+          <view
+            v-for="(section, index) in goods.content"
+            :key="index"
+            class="tab-item"
+            :class="{ active: activeTabIndex === index }"
+            @click="activeTabIndex = index"
+          >
+            {{ section.title || '详情' }}
+          </view>
+        </view>
+        <!-- 内容区域 -->
+        <view class="content-section">
+          <mp-html :content="decodeHtml(goods.content[activeTabIndex].content)"/>
+        </view>
       </view>
     </view>
 
@@ -179,6 +194,8 @@
         isEnableCart: false,
         // 是否显示在线客服按钮
         isShowCustomerBtn: false,
+        // 当前激活的标签索引
+        activeTabIndex: 0,
       }
     },
     computed: {
@@ -202,6 +219,11 @@
     },
 
     methods: {
+
+      // HTML内容解码
+      decodeHtml(content) {
+        return content ? content.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&') : ''
+      },
 
       // 记录query参数
       onRecordQuery(query) {
@@ -313,4 +335,34 @@
 </style>
 <style lang="scss" scoped>
   @import "./detail.scss";
+
+  .content-tabs {
+    display: flex;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 20rpx;
+
+    .tab-item {
+      padding: 20rpx 30rpx;
+      font-size: 28rpx;
+      color: #666;
+      position: relative;
+      cursor: pointer;
+
+      &.active {
+        color: #e31d1d;
+
+        &::after {
+          content: '';
+          position: absolute;
+          left: 50%;
+          bottom: -2rpx;
+          transform: translateX(-50%);
+          width: 40rpx;
+          height: 4rpx;
+          background: #e31d1d;
+          border-radius: 2rpx;
+        }
+      }
+    }
+  }
 </style>

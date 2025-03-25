@@ -114,6 +114,21 @@
   font-size: 26rpx;
 }
 
+.goods-content__detail {
+  padding: 20rpx;
+
+  .content-section {
+    margin-bottom: 30rpx;
+
+    .section-title {
+      font-size: 28rpx;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 15rpx;
+    }
+  }
+}
+
 // 底部操作栏
 .footer-fixed {
   position: fixed;
