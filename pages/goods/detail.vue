@@ -71,11 +71,15 @@
       <view class="item-title b-f">
         <text>商品描述</text>
       </view>
-      <view v-if="goods.content && goods.content.length" class="goods-content__detail b-f">
+      <view v-if="goods.content" class="goods-content__detail b-f">
+        <!-- 固定详情内容 -->
+        <view v-if="goods.content.text" class="content-fixed">
+          <mp-html :content="decodeHtml(goods.content.text)"/>
+        </view>
         <!-- 标签栏 -->
-        <view class="content-tabs">
+        <view v-if="goods.content.list && goods.content.list.length" class="content-tabs">
           <view
-            v-for="(section, index) in goods.content"
+            v-for="(section, index) in goods.content.list"
             :key="index"
             class="tab-item"
             :class="{ active: activeTabIndex === index }"
@@ -84,9 +88,13 @@
             {{ section.title || '详情' }}
           </view>
         </view>
-        <!-- 内容区域 -->
-        <view class="content-section">
-          <mp-html :content="decodeHtml(goods.content[activeTabIndex].content)"/>
+        <!-- 分段内容区域 -->
+        <view v-if="goods.content.list && goods.content.list.length" class="content-section">
+          <mp-html :content="decodeHtml(goods.content.list[activeTabIndex].content)"/>
+        </view>
+        <!-- 尾部声明 -->
+        <view v-if="goods.content.end" class="content-end">
+          <mp-html :content="decodeHtml(goods.content.end)"/>
         </view>
       </view>
     </view>
@@ -222,7 +230,7 @@
 
       // HTML内容解码
       decodeHtml(content) {
-        return content ? content.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&') : ''
+        return content ? content : ''
       },
 
       // 记录query参数
@@ -328,41 +336,6 @@
   }
 </script>
 
-<style>
-  page {
-    background: #fafafa;
-  }
-</style>
 <style lang="scss" scoped>
   @import "./detail.scss";
-
-  .content-tabs {
-    display: flex;
-    border-bottom: 1px solid #eee;
-    margin-bottom: 20rpx;
-
-    .tab-item {
-      padding: 20rpx 30rpx;
-      font-size: 28rpx;
-      color: #666;
-      position: relative;
-      cursor: pointer;
-
-      &.active {
-        color: #e31d1d;
-
-        &::after {
-          content: '';
-          position: absolute;
-          left: 50%;
-          bottom: -2rpx;
-          transform: translateX(-50%);
-          width: 40rpx;
-          height: 4rpx;
-          background: #e31d1d;
-          border-radius: 2rpx;
-        }
-      }
-    }
-  }
 </style>

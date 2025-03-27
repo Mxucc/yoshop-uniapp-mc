@@ -56,7 +56,8 @@
         name: goods.goods_name,
         goods_thumb: goods.goods_image,
         sku_list: app.getSkuList(),
-        spec_list: app.getSpecList()
+        spec_list: app.getSpecList(),
+        isMulti: goods.isMulti || false
       }
       app.maxBuyNum = app.getMaxBuyNum()
     },

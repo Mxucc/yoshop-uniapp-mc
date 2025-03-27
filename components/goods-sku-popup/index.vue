@@ -621,6 +621,9 @@
       skuClick(value, index1, index2) {
         let that = this;
         if (value.ishow) {
+          // 判断是否支持多规格选择
+          const isMulti = that.goodsInfo.isMulti || false;
+          
           if (that.selectArr[index1] != value.name) {
             that.$set(that.selectArr, index1, value.name);
             that.$set(that.subIndex, index1, index2);
@@ -628,6 +631,17 @@
             that.$set(that.selectArr, index1, '');
             that.$set(that.subIndex, index1, -1);
           }
+          
+          // 如果不支持多规格选择，则清除其他已选择的规格
+          if (!isMulti) {
+            for (let i = 0; i < that.selectArr.length; i++) {
+              if (i !== index1 && that.selectArr[i] !== '') {
+                that.$set(that.selectArr, i, '');
+                that.$set(that.subIndex, i, -1);
+              }
+            }
+          }
+          
           that.checkInpath(index1);
           // 如果全部选完
           that.checkSelectShop();
