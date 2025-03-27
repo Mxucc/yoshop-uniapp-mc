@@ -11,7 +11,7 @@
   import { hex2rgba } from '@/utils/color'
   import * as CartApi from '@/api/cart'
   import GoodsSkuPopup from '@/components/goods-sku-popup'
-
+  
   export default {
     components: {
       GoodsSkuPopup
