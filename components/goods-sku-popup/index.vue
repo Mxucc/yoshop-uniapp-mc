@@ -769,6 +769,23 @@
         }
         that.clickTime = clickTime;
         let { selectShop, selectNum, stockText, stockName } = that;
+        const isMulti = that.goodsInfo.isMulti || false;
+        
+        // 判断是否为单选多规格（spec_type=30）
+        if (!isMulti && that.selectArr.some(item => item !== '')) {
+          // 单选多规格只需要选择一个规格即可
+          const selectedIndex = that.selectArr.findIndex(item => item !== '');
+          if (selectedIndex !== -1) {
+            // 获取已选择的规格值
+            const selectedValue = that.selectArr[selectedIndex];
+            // 构建一个只包含已选择规格的数组
+            const selectedArr = [selectedValue];
+            // 获取对应的商品信息
+            selectShop = that.shopItemInfo[that.getArrayToSting(selectedArr)];
+            that.selectShop = selectShop;
+          }
+        }
+        
         if (!selectShop || !selectShop[that.skuIdName]) {
           that.toast('请先选择对应规格', 'none');
           return false;
