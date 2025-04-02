@@ -45,7 +45,7 @@
     </view>
 
     <!-- 选择商品规格 -->
-    <view v-if="goods.spec_type == 20 || goods.spec_type == 30" class="goods-choice m-top20 b-f" @click="onShowSkuPopup(1)">
+    <view v-if="goods.spec_type == 20" class="goods-choice m-top20 b-f" @click="onShowSkuPopup(1)">
       <view class="spec-list">
         <view class="flex-box">
           <text class="col-8">选择：</text>

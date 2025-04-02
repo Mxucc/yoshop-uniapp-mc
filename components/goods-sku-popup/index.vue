@@ -621,25 +621,12 @@
       skuClick(value, index1, index2) {
         let that = this;
         if (value.ishow) {
-          // 判断是否支持多规格选择
-          const isMulti = that.goodsInfo.isMulti || false;
-          
           if (that.selectArr[index1] != value.name) {
             that.$set(that.selectArr, index1, value.name);
             that.$set(that.subIndex, index1, index2);
           } else {
             that.$set(that.selectArr, index1, '');
             that.$set(that.subIndex, index1, -1);
-          }
-          
-          // 如果不支持多规格选择，则清除其他已选择的规格
-          if (!isMulti) {
-            for (let i = 0; i < that.selectArr.length; i++) {
-              if (i !== index1 && that.selectArr[i] !== '') {
-                that.$set(that.selectArr, i, '');
-                that.$set(that.subIndex, i, -1);
-              }
-            }
           }
           
           that.checkInpath(index1);
@@ -769,22 +756,6 @@
         }
         that.clickTime = clickTime;
         let { selectShop, selectNum, stockText, stockName } = that;
-        const isMulti = that.goodsInfo.isMulti || false;
-        
-        // 判断是否为单选多规格（spec_type=30）
-        if (!isMulti && that.selectArr.some(item => item !== '')) {
-          // 单选多规格只需要选择一个规格即可
-          const selectedIndex = that.selectArr.findIndex(item => item !== '');
-          if (selectedIndex !== -1) {
-            // 获取已选择的规格值
-            const selectedValue = that.selectArr[selectedIndex];
-            // 构建一个只包含已选择规格的数组
-            const selectedArr = [selectedValue];
-            // 获取对应的商品信息
-            selectShop = that.shopItemInfo[that.getArrayToSting(selectedArr)];
-            that.selectShop = selectShop;
-          }
-        }
         
         if (!selectShop || !selectShop[that.skuIdName]) {
           that.toast('请先选择对应规格', 'none');

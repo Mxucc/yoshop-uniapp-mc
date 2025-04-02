@@ -56,8 +56,7 @@
         name: goods.goods_name,
         goods_thumb: goods.goods_image,
         sku_list: app.getSkuList(),
-        spec_list: app.getSpecList(),
-        isMulti: goods.spec_type === 20 // 多选多规格才设置为true，单选多规格为false
+        spec_list: app.getSpecList()
       }
       app.maxBuyNum = app.getMaxBuyNum()
     },
