@@ -1,6 +1,12 @@
 <template>
   <view class="container">
 
+    <view>
+      <image src="/static/maomao.png" class="login_header"/>
+    </view>
+    <view>
+      <image src="/static/title.png" class="text_header"/>
+    </view>
     <!-- 页面头部 -->
     <view class="header">
       <view class="title">
@@ -270,24 +276,35 @@
 </script>
 
 <style lang="scss" scoped>
+
   .container {
     padding: 100rpx 60rpx;
     min-height: 100vh;
-    background-color: #fff;
+    background: linear-gradient(180deg, #0080ff, #ffffff);
   }
 
+  .login_header{
+    display: block;
+    margin: 0 auto;
+    width: 60%;
+  }
+  .text_header{
+    display: block;
+    margin: 0 auto;
+    width: 100%;
+  }
   // 页面头部
   .header {
     margin-bottom: 60rpx;
 
     .title {
-      color: #191919;
+      color: #ffffff;
       font-size: 54rpx;
     }
 
     .sub-title {
       margin-top: 20rpx;
-      color: #b3b3b3;
+      color: #ffffff;
       font-size: 28rpx;
     }
   }
@@ -297,9 +314,11 @@
     display: flex;
     align-items: center;
     padding: 18rpx;
-    border-bottom: 1rpx solid #f3f1f2;
+    border: 1rpx solid #ffffff;
+    border-radius: 48rpx;
     margin-bottom: 30rpx;
     height: 96rpx;
+    background-color: transparent;
 
     &--input {
       font-size: 28rpx;
@@ -334,7 +353,7 @@
       }
 
       .un-activate {
-        color: #9e9e9e;
+        color: #e6e6e6;
       }
     }
   }
@@ -345,8 +364,9 @@
     width: 100%;
     height: 86rpx;
     margin-top: 80rpx;
-    background: linear-gradient(to right, $main-bg, $main-bg2);
-    color: $main-text;
+    background: transparent;
+    border: 1rpx solid $main-bg;
+    color: $main-bg;
     border-radius: 80rpx;
     box-shadow: 0px 10px 20px 0px rgba(0, 0, 0, 0.1);
     letter-spacing: 5rpx;
