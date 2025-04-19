@@ -1,8 +1,9 @@
 <template>
   <view class="container" :style="appThemeStyle">
-    <!-- 店铺页面组件 -->
     <Page :items="items" />
-    <!-- 用户隐私保护提示（仅微信小程序） -->
+    <u-popup ref="imagePopup" mode="center" :safe-area-inset-bottom="false" background-color="transparent" :custom-style="{padding:0}" :closeable="true" close-icon="close" close-icon-pos="top-right" close-icon-color="#ffffff" :close-icon-size="36" :border-radius="16" @close="closeImagePopup">
+      <image :src="imageUrl" mode="widthFix" style="width: 600rpx; border-radius: 12rpx;" @click="onTargetHome"/>
+    </u-popup>
     <!-- #ifdef MP-WEIXIN -->
     <PrivacyPopup :hideTabBar="true" />
     <!-- #endif -->
@@ -10,127 +11,104 @@
 </template>
 
 <script>
-  import { setCartTabBadge } from '@/core/app'
-  import * as Api from '@/api/page'
-  import Page from '@/components/page'
-  import PrivacyPopup from '@/components/privacy-popup'
+import { setCartTabBadge } from '@/core/app'
+import * as Api from '@/api/page'
+import Page from '@/components/page'
+import PrivacyPopup from '@/components/privacy-popup'
+import uPopup from '@/uni_modules/vk-uview-ui/components/u-popup/u-popup.vue'
 
-  const App = getApp()
+const App = getApp()
 
-  export default {
-    components: {
-      Page,
-      PrivacyPopup
-    },
-    data() {
-      return {
-        // 页面参数
-        options: {},
-        // 页面属性
-        page: {},
-        // 页面元素
-        items: []
-      }
-    },
-
-    /**
-     * 生命周期函数--监听页面加载
-     */
-    onLoad(options) {
-      // 当前页面参数
-      this.options = options
-      // 加载页面数据
-      this.getPageData()
-    },
-
-    /**
-     * 生命周期函数--监听页面显示
-     */
-    onShow() {
-      // 更新购物车角标
-      setCartTabBadge()
-    },
-
-    methods: {
-
-      /**
-       * 加载页面数据
-       * @param {Object} callback
-       */
-      getPageData(callback) {
-        const app = this
-        const pageId = app.options.pageId || 0
-        Api.detail(pageId)
-          .then(result => {
-            // 设置页面数据
-            const { data: { pageData } } = result
-            app.page = pageData.page
-            app.items = pageData.items
-            // 设置顶部导航栏栏
-            app.setPageBar()
-          })
-          .finally(() => callback && callback())
-      },
-
-      /**
-       * 设置顶部导航栏
-       */
-      setPageBar() {
-        const { page } = this
-        // 设置页面标题
-        uni.setNavigationBarTitle({
-          title: page.params.title
-        })
-        // 设置navbar标题、颜色
-        uni.setNavigationBarColor({
-          frontColor: page.style.titleTextColor === 'white' ? '#ffffff' : '#000000',
-          backgroundColor: page.style.titleBackgroundColor
-        })
-      }
-
-    },
-
-    /**
-     * 下拉刷新
-     */
-    onPullDownRefresh() {
-      // 获取首页数据
-      this.getPageData(() => {
-        uni.stopPullDownRefresh()
-      })
-    },
-
-    /**
-     * 分享当前页面
-     */
-    onShareAppMessage() {
-      const app = this
-      const { page } = app
-      return {
-        title: page.params.shareTitle,
-        path: "/pages/index/index?" + app.$getShareUrlParams()
-      }
-    },
-
-    /**
-     * 分享到朋友圈
-     * 本接口为 Beta 版本，暂只在 Android 平台支持，详见分享到朋友圈 (Beta)
-     * https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/share-timeline.html
-     */
-    onShareTimeline() {
-      const app = this
-      const { page } = app
-      return {
-        title: page.params.shareTitle,
-        path: "/pages/index/index?" + app.$getShareUrlParams()
-      }
+export default {
+  components: {
+    Page,
+    PrivacyPopup,
+    uPopup
+  },
+  data() {
+    return {
+      options: {},
+      page: {},
+      items: [],
+      imageUrl: '/static/pop.png'
     }
-
+  },
+  onLoad(options) {
+    this.options = options
+    this.getPageData()
+  },
+  onReady() {
+    const hasShown = uni.getStorageSync('hasShownPopup')
+    if (!hasShown && this.$refs.imagePopup) {
+      this.$refs.imagePopup.open()
+      // uni.setStorageSync('hasShownPopup', true)
+    }
+  },
+  onShow() {
+    setCartTabBadge()
+  },
+  methods: {
+    closeImagePopup() {
+      if (this.$refs.imagePopup) {
+        this.$refs.imagePopup.close()
+      }
+    },
+    onTargetHome() {
+      this.$navTo('pages/custom/index?pageId=10009')
+    },
+    getPageData(callback) {
+      const app = this
+      const pageId = app.options.pageId || 0
+      Api.detail(pageId)
+        .then(result => {
+          const { data: { pageData } } = result
+          app.page = pageData.page
+          app.items = pageData.items
+          app.setPageBar()
+        })
+        .finally(() => callback && callback())
+    },
+    setPageBar() {
+      const { page } = this
+      uni.setNavigationBarTitle({
+        title: page.params.title
+      })
+      uni.setNavigationBarColor({
+        frontColor: page.style.titleTextColor === 'white' ? '#ffffff' : '#000000',
+        backgroundColor: page.style.titleBackgroundColor
+      })
+    }
+  },
+  onPullDownRefresh() {
+    this.getPageData(() => {
+      uni.stopPullDownRefresh()
+    })
+  },
+  onShareAppMessage() {
+    const app = this
+    const { page } = app
+    return {
+      title: page.params.shareTitle,
+      path: "/pages/index/index?" + app.$getShareUrlParams()
+    }
+  },
+  onShareTimeline() {
+    const app = this
+    const { page } = app
+    return {
+      title: page.params.shareTitle,
+      path: "/pages/index/index?" + app.$getShareUrlParams()
+    }
   }
+}
 </script>
 
 <style lang="scss" scoped>
-  .container {
-    background: #fff;
-  }
+.container {
+  background: #fff;
+}
+::v-deep .u-mode-center-box {
+  background-color: rgba(0, 0, 0, 0) !important;
+  box-shadow: none !important;
+}
 </style>

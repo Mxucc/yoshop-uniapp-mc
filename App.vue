@@ -1,8 +1,9 @@
 <script>
   import store from '@/store'
   import StoreModel from '@/common/model/Store'
-  import { getSceneData } from './core/app'
+  import { getSceneData, checkLogin } from './core/app'
   import { isObject } from './utils/util'
+  import { setupRouterGuard } from './core/permission'
 
   export default {
 
@@ -23,6 +24,17 @@
       this.onStartupQuery(isObject(query) ? query : {})
       // 获取商城基础信息
       this.getStoreInfo()
+      // 设置路由拦截器
+      setupRouterGuard()
+      
+      // 立即检查登录状态
+      if (!checkLogin()) {
+        // 如果未登录，直接重定向到登录页
+        uni.reLaunch({
+          url: '/pages/login/index'
+        })
+        return
+      }
     },
 
     methods: {

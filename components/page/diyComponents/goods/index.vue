@@ -199,7 +199,9 @@
             padding: 0;
 
             .goods-name {
-              font-size: 27rpx;
+              font-size: 33rpx;
+              //加粗
+              font-weight: 600;
             }
 
             .footer {
