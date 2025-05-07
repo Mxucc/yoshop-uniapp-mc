@@ -81,10 +81,10 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "",
+        "appid" : "wxbeb4e91596ff2085",
         "setting" : {
             // 是否检查安全域名和 TLS 版本
-            "urlCheck" : true,
+            "urlCheck" : false,
             // es6转es5
             "es6" : false,
             // 上传代码时自动压缩
@@ -95,7 +95,8 @@
             "minifyWXSS" : true,
             // 上传代码时是否自动压缩wxml文件
             // 因uniappp构建出来的wxml本身就是压缩好的, 如果再用微信开发工具压缩一次的话, 有可能会破坏到文件, 所以此处设为false
-            "minifyWXML" : false
+            "minifyWXML" : false,
+            "postcss" : true
         },
         "usingComponents" : true,
         "lazyCodeLoading" : "requiredComponents",

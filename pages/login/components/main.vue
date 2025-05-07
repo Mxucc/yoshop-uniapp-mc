@@ -2,12 +2,12 @@
   <view class="container">
 
     <view>
-      <image src="/static/maomao.png" class="login_header"/>
+      <image src="/static/fbimg.png" class="login_header"/>
     </view>
-    <view>
-      <image src="/static/title.png" class="text_header"/>
+     <view>
+      <image src="/static/fbtext.png" class="text_header"/>
     </view>
-    <!-- 页面头部 -->
+   <!-- 页面头部 -->
     <view class="header">
       <view class="title">
         <text>手机号登录</text>
@@ -278,21 +278,26 @@
 <style lang="scss" scoped>
 
   .container {
-    padding: 100rpx 60rpx;
+    padding: 50rpx 60rpx;
     min-height: 100vh;
-    background: linear-gradient(180deg, #0080ff, #ffffff);
+    background: linear-gradient(180deg, #00a2ff, #ffffff);
   }
 
   .login_header{
     display: block;
     margin: 0 auto;
-    width: 60%;
+    width: 300rpx;
+    height: 300rpx;
+    object-fit: contain;
   }
   .text_header{
-    display: block;
-    margin: 0 auto;
-    width: 100%;
+      display: block;
+      margin: 0 auto;
+      width: 525rpx;
+      height: 185rpx;
+      object-fit: contain;
   }
+
   // 页面头部
   .header {
     margin-bottom: 60rpx;
@@ -353,7 +358,7 @@
       }
 
       .un-activate {
-        color: #e6e6e6;
+        color: #0026ff;
       }
     }
   }
@@ -361,6 +366,7 @@
 
   // 登录按钮
   .login-button {
+    margin-bottom: 50rpx;
     width: 100%;
     height: 86rpx;
     margin-top: 80rpx;

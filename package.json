@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "vk-uview-ui": "^1.5.2",
     "weixin-js-sdk": "^1.6.0"
   }
 }

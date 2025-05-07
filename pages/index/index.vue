@@ -30,7 +30,7 @@ export default {
       options: {},
       page: {},
       items: [],
-      imageUrl: '/static/pop.png'
+      imageUrl: '/static/pop1.png'
     }
   },
   onLoad(options) {
@@ -38,11 +38,11 @@ export default {
     this.getPageData()
   },
   onReady() {
-    const hasShown = uni.getStorageSync('hasShownPopup')
-    if (!hasShown && this.$refs.imagePopup) {
+    // const hasShown = uni.getStorageSync('hasShownPopup')
+    // if (!hasShown && this.$refs.imagePopup) {
       this.$refs.imagePopup.open()
       // uni.setStorageSync('hasShownPopup', true)
-    }
+    // }
   },
   onShow() {
     setCartTabBadge()
@@ -54,7 +54,7 @@ export default {
       }
     },
     onTargetHome() {
-      this.$navTo('pages/custom/index?pageId=10009')
+      this.$navTo('pages/coupon/index')
     },
     getPageData(callback) {
       const app = this

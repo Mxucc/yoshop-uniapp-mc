@@ -2,7 +2,12 @@
 # yarn lockfile v1
 
 
+vk-uview-ui@^1.5.2:
+  version "1.5.2"
+  resolved "https://registry.npmjs.org/vk-uview-ui/-/vk-uview-ui-1.5.2.tgz"
+  integrity sha512-RRZgiEAc8qaUerSi7lSbrkCoLBgRUwFQHwP1V44pJO7Js+7HeHFEkkpPrtkOi14hl4CntR4qIhIDvaKmIJqVsw==
+
 weixin-js-sdk@^1.6.0:
-  version "1.6.5"
-  resolved "https://registry.yarnpkg.com/weixin-js-sdk/-/weixin-js-sdk-1.6.5.tgz#01fe5220b91dbfe089fc0730d061be0e68271e6a"
-  integrity sha512-Gph1WAWB2YN/lMOFB/ymb+hbU/wYazzJgu6PMMktCy9cSCeW5wA6Zwt0dpahJbJ+RJEwtTv2x9iIu0U4enuVSQ==
+  version "1.6.0"
+  resolved "https://registry.npmjs.org/weixin-js-sdk/-/weixin-js-sdk-1.6.0.tgz"
+  integrity sha512-3IYQH7aalJGFJrwdT3epvTdR1MboMiH7vIZ5BRL2eYOJ12BNah7csoMkmSZzkq1+l92sSq29XdTCVjCJoK2sBQ==
