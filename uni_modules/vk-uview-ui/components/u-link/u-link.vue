@@ -56,7 +56,7 @@
 			// 小程序中复制到粘贴板的提示语
 			mpTips: {
 				type: String,
-				default: '链接已复制，请在浏览器打开'
+				default: '链接已复制，请在浏览器打开ul'
 			},
 			// 下划线颜色
 			lineColor: {

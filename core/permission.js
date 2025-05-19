@@ -3,7 +3,6 @@ import { checkLogin } from '@/core/app'
 
 // 需要登录才能访问的页面路径
 const loginRequiredPages = [
-  'pages/index/index',
   'pages/category/index',
   'pages/cart/index',
   'pages/user/index',
@@ -74,13 +73,23 @@ function routerGuard(e, navigationType) {
   // 检查是否需要登录
   const needLogin = loginRequiredPages.some(page => pagePath.includes(page))
   
-  // 如果需要登录但未登录，则跳转到登录页
+  // 如果需要登录但未登录，则显示提醒但不阻止导航
   if ((needLogin || pagePath === 'pages/index/index') && !checkLogin()) {
-    uni.redirectTo({
-      url: '/pages/login/index'
+    uni.showModal({
+      title: '温馨提示',
+      content: '本小程序需要登录后才能使用完整功能，是否立即登录？',
+      success(res) {
+        if (res.confirm) {
+          uni.redirectTo({
+            url: '/pages/login/index'
+          })
+        }
+      }
     })
-    return false // 阻止原来的导航
   }
+  
+  // 始终允许导航
+  return true
   
   // 其他情况放行
   return true

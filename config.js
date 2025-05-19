@@ -1,13 +1,13 @@
 export default {
 
   // 系统名称
-  name: "自然之旅",
+  name: "福博寻宝",
 
   /**
    * 后端api地址 (必填; 斜杠/结尾; 请确保能访问)
    * 例如: https://www.你的域名.com/index.php?s=/api/
    */
-  apiUrl: "https://yoshop.04s.net/index.php?s=/api/",
+  apiUrl: "https://fbxunbao.04s.net/index.php?s=/api/",
 
   /**
    * 是否启用商城设置缓存

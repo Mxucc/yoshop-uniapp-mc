@@ -280,7 +280,13 @@ export const onLink = linkObj => {
     // #ifdef APP-PLUS
     plus.runtime.openWeb(linkObj.param.url)
     // #endif
-    // #ifdef MP
+    // #ifdef MP-WEIXIN
+    // 通过 web-view 组件打开 H5 页面
+    uni.navigateTo({
+      url: `/pages/webview/webview?url=${encodeURIComponent(linkObj.param.url)}`
+    })
+    // #endif
+    // #ifdef MP && !MP-WEIXIN
     uni.setClipboardData({
       data: linkObj.param.url,
       success: () => showToast('链接已复制'),

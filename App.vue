@@ -27,14 +27,8 @@
       // 设置路由拦截器
       setupRouterGuard()
       
-      // 立即检查登录状态
-      if (!checkLogin()) {
-        // 如果未登录，直接重定向到登录页
-        uni.reLaunch({
-          url: '/pages/login/index'
-        })
-        return
-      }
+      // 检查登录状态但不强制跳转
+      checkLogin()
     },
 
     methods: {

@@ -1,7 +1,7 @@
 <template>
   <view v-if="isLoad" class="login" :style="appThemeStyle">
+    <Main :isParty="isParty" :partyData="partyData" :isMpWeixinMobile="isMpWeixinMobile" />
     <MpWeixin v-if="isMpWeixinAuth" @success="onGetUserInfoSuccess" />
-    <Main v-else :isParty="isParty" :partyData="partyData" :isMpWeixinMobile="isMpWeixinMobile" />
   </view>
 </template>
 

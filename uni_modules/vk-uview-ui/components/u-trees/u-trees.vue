@@ -529,6 +529,6 @@
 		content: '';
 		border-color: transparent transparent transparent white;
 		border-style: solid;
-		border-width: 15px 0 15px 30px;
+		rder-width: 15px 0 15px 30px;
 	}
 </style>
