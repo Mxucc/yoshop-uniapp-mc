@@ -81,7 +81,7 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "wxbeb4e91596ff2085",
+        "appid" : "wx90e6f433c61a9d0c",
         "setting" : {
             // 是否检查安全域名和 TLS 版本
             "urlCheck" : false,
