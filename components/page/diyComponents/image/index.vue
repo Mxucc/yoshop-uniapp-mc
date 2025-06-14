@@ -2,8 +2,8 @@
   <!-- 单图组 -->
   <view class="diy-imageSingle" :style="{ paddingBottom: `${itemStyle.paddingTop * 2}rpx`, background: itemStyle.background }">
     <view class="item-image" v-for="(dataItem, index) in dataList" :key="index" :style="{ padding: `${itemStyle.paddingTop * 2}rpx ${itemStyle.paddingLeft * 2}rpx 0` }">
-      <view class="nav-to" @click="onLink(dataItem.link)">
-        <image class="image" :src="dataItem.imgUrl" mode="widthFix"></image>
+      <view class="nav-to">
+        <image class="image" :src="dataItem.imgUrl" mode="widthFix" :show-menu-by-longpress="true" @click="previewImage(dataItem.imgUrl, index)" @longpress="onLink(dataItem.link)"></image>
       </view>
     </view>
   </view>
@@ -33,7 +33,16 @@
      * 更新属性和数据的方法与更新页面数据的方法类似
      */
     methods: {
-
+      /**
+       * 预览图片
+       */
+      previewImage(current, index) {
+        const urls = this.dataList.map(item => item.imgUrl)
+        uni.previewImage({
+          current: current,
+          urls: urls
+        })
+      }
     }
 
   }

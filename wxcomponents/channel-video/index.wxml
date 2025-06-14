@@ -1,0 +1,7 @@
+<view>
+	<channel-video
+		feed-id="{{feedId}}"
+		finder-user-name="MoeXiao"
+		autoplay="{{false}}"
+	></channel-video>
+</view> 

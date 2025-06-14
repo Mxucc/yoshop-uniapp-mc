@@ -303,3 +303,248 @@
     color: $vice-text;
   }
 }
+
+// 公众号跳转横幅样式
+.wechat-banner {
+  background: #fff;
+  margin: 20rpx;
+  border-radius: 16rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4rpx;
+    background: linear-gradient(90deg, #07c160 0%, #38d973 100%);
+  }
+  
+  .banner-content {
+    padding: 24rpx 30rpx;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .banner-left {
+    display: flex;
+    align-items: center;
+    flex: 1;
+  }
+  
+  .wechat-icon {
+    width: 80rpx;
+    height: 80rpx;
+    background: linear-gradient(135deg, #07c160 0%, #38d973 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 24rpx;
+    
+    .iconfont {
+      font-size: 40rpx;
+      color: #fff;
+    }
+  }
+  
+  .banner-text {
+    flex: 1;
+    
+    .banner-title {
+      display: block;
+      font-size: 32rpx;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 8rpx;
+    }
+    
+    .banner-subtitle {
+      display: block;
+      font-size: 26rpx;
+      color: #666;
+      line-height: 1.4;
+    }
+  }
+  
+  .banner-right {
+    display: flex;
+    align-items: center;
+    
+    .banner-btn {
+      background: linear-gradient(135deg, #07c160 0%, #38d973 100%);
+      color: #fff;
+      padding: 16rpx 32rpx;
+      border-radius: 50rpx;
+      font-size: 28rpx;
+      font-weight: 500;
+      margin-right: 16rpx;
+      box-shadow: 0 4rpx 12rpx rgba(7, 193, 96, 0.3);
+    }
+    
+    .banner-arrow {
+      font-size: 28rpx;
+      color: #999;
+    }
+  }
+  
+  // 点击效果
+  &:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+}
+
+// 小程序跳转横幅样式
+.miniprogram-banner {
+  background: #fff;
+  margin: 20rpx;
+  border-radius: 16rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4rpx;
+    background: linear-gradient(90deg, #1aad19 0%, #2dc653 100%);
+  }
+  
+  .banner-content {
+    padding: 24rpx 30rpx;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .banner-left {
+    display: flex;
+    align-items: center;
+    flex: 1;
+  }
+  
+  .miniprogram-icon {
+    width: 80rpx;
+    height: 80rpx;
+    background: linear-gradient(135deg, #1aad19 0%, #2dc653 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 24rpx;
+    
+    .iconfont {
+      font-size: 40rpx;
+      color: #fff;
+    }
+    
+    text {
+      font-size: 32rpx;
+      color: #fff;
+      font-weight: bold;
+    }
+  }
+  
+  .banner-text {
+    flex: 1;
+    
+    .banner-title {
+      display: block;
+      font-size: 32rpx;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 8rpx;
+    }
+    
+    .banner-subtitle {
+      display: block;
+      font-size: 26rpx;
+      color: #666;
+      line-height: 1.4;
+    }
+  }
+  
+  // 点击效果
+  &:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+}
+
+// 响应式适配
+@media (max-width: 750rpx) {
+  .wechat-banner {
+    margin: 16rpx;
+    
+    .banner-content {
+      padding: 20rpx 24rpx;
+    }
+    
+    .wechat-icon {
+      width: 70rpx;
+      height: 70rpx;
+      margin-right: 20rpx;
+      
+      .iconfont {
+        font-size: 36rpx;
+      }
+    }
+    
+    .banner-text {
+      .banner-title {
+        font-size: 30rpx;
+      }
+      
+      .banner-subtitle {
+        font-size: 24rpx;
+      }
+    }
+    
+    .banner-right {
+      .banner-btn {
+        padding: 14rpx 28rpx;
+        font-size: 26rpx;
+      }
+    }
+  }
+  
+  .miniprogram-banner {
+    margin: 16rpx;
+    
+    .banner-content {
+      padding: 20rpx 24rpx;
+    }
+    
+    .miniprogram-icon {
+      width: 70rpx;
+      height: 70rpx;
+      margin-right: 20rpx;
+      
+      .iconfont {
+        font-size: 36rpx;
+      }
+      
+      text {
+        font-size: 28rpx;
+      }
+    }
+    
+    .banner-text {
+      .banner-title {
+        font-size: 30rpx;
+      }
+      
+      .banner-subtitle {
+        font-size: 24rpx;
+      }
+    }
+  }
+}

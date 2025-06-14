@@ -30,7 +30,8 @@
     {
       "path": "pages/index/index",
       "style": {
-        "enablePullDownRefresh": true
+        "enablePullDownRefresh": true,
+        "navigationStyle": "custom"
       }
     },
     {
@@ -110,7 +111,10 @@
     {
       "path": "pages/goods/list",
       "style": {
-        "navigationBarTitleText": "商品列表",
+        "navigationBarTitleText": "踏上行程",
+        "usingComponents": {
+        	"channel-video": "/wxcomponents/channel-video/index"
+        },
         "enablePullDownRefresh": true
       }
     },

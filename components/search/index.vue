@@ -15,7 +15,7 @@
     props: {
       tips: {
         type: String,
-        default: '搜索商品'
+        default: '搜索~'
       }
     },
     data() {

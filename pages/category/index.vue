@@ -2,7 +2,7 @@
   <view class="container">
     <!-- 搜索框 -->
     <view class="search">
-      <search tips="搜索商品" @event="$navTo('pages/search/index')" />
+      <search tips="搜索~" @event="$navTo('pages/search/index')" />
     </view>
 
     <!-- 一级分类 -->

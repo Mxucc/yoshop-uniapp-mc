@@ -57,6 +57,24 @@
       </view>
     </view>
 
+    <!-- 公众号跳转组件 -->
+    <WechatJump 
+      title="转到公众号" 
+      subtitle="了解旅游路线和观赏视频" 
+      button-text="立即关注"
+      jump-url="https://mp.weixin.qq.com/s/sNk6L-JDasEBBuVqH8RlHA" 
+    />
+    
+    <!-- 小程序跳转组件 -->
+    <MiniprogramJump 
+      title="打开小程序" 
+      subtitle="获取更多服务和优惠" 
+      button-text="去打开"
+      app-id="wxfa54805b1df3352f"
+      path="pagesShop/pages/topicNew/topicNew?id=386&name台湾手信"
+      :extra-data="{ goodsId: goodsId }" 
+    />
+    
     <!-- 商品服务 -->
     <Service v-if="!isLoading" :goods-id="goodsId" />
 
@@ -172,6 +190,9 @@
   import SkuPopup from './components/SkuPopup'
   import Comment from './components/Comment'
   import Service from './components/Service'
+  import WechatJump from '@/components/product-intro/wechat-jump'
+  import MiniprogramJump from '@/components/product-intro/miniprogram-jump'
+  import { onLink } from '@/core/app'
 
   export default {
     components: {
@@ -180,7 +201,10 @@
       SlideImage,
       SkuPopup,
       Comment,
-      Service
+      Service,
+      WechatJump,
+      MiniprogramJump,
+      onLink
     },
     data() {
       return {
@@ -309,6 +333,8 @@
       onTargetCart() {
         this.$navTo('pages/cart/index')
       },
+
+
 
     },
 
