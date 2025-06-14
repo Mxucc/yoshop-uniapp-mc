@@ -1,10 +1,10 @@
 <template>
   <view class="container">
     <view>
-      <image src="/static/fbimg.png" class="login_header"/>
+      <image src="/static/maomao.png" class="login_header"/>
     </view>
      <view>
-      <image src="/static/fbtext.png" class="text_header"/>
+      <image src="/static/title.png" class="text_header"/>
     </view>
    <!-- 页面头部 -->
     <view class="header">

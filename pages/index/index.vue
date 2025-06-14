@@ -12,7 +12,7 @@
       <view class="nav-content" :style="{height: menuHeight + 'px', marginTop: menuBottom + 'px', marginBottom: menuBottom + 'px'}">
         <!-- Logo区域 -->
         <view class="logo-section" :style="{marginRight: menuWidth + menuRight + 'px'}">
-          <text class="logo-text">福博寻宝</text>
+          <text class="logo-text">贸贸带你游</text>
         </view>
       </view>
       
