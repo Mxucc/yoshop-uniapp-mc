@@ -1,6 +1,5 @@
 <template>
   <view>
-  <!-- #ifndef MP-WEIXIN -->
   <view class="container">
     <view>
       <image :src="logoImg" class="login_header"/>
@@ -46,13 +45,12 @@
       <view class="login-button" :class="{ disabled }" @click="handleLogin()">
         <text>登录</text>
       </view>
+      <!-- 微信授权手机号一键登录 -->
+      <!-- #ifdef MP-WEIXIN -->
+      <MpWeixinMobile v-if="isMpWeixinMobile" :isParty="isParty" :partyData="partyData" />
+      <!-- #endif -->
     </view>
   </view>
-    <!-- #endif -->
-    <!-- 微信授权手机号一键登录 -->
-    <!-- #ifdef MP-WEIXIN -->
-    <MpWeixinMobile v-if="isMpWeixinMobile" :isParty="isParty" :partyData="partyData" />
-    <!-- #endif -->
   </view>
 </template>
 
@@ -290,16 +288,18 @@
   .login_header{
     display: block;
     margin: 0 auto;
-    width: 300rpx;
-    height: 300rpx;
+    width: 200rpx;
+    height: 200rpx;
     object-fit: contain;
+    aspect-ratio: auto;
   }
   .text_header{
       display: block;
       margin: 0 auto;
-      width: 533rpx;
-      height: 306rpx;
+      width: 479rpx;
+      height: 275rpx;
       object-fit: contain;
+      aspect-ratio: auto;
   }
 
   // 页面头部

@@ -1,13 +1,11 @@
 <template>
   <!-- 手机号快捷登录 -->
   <view class="phone-auth">
-    <!-- #ifndef MP-WEIXIN -->
     <button class="btn-normal" open-type="getPhoneNumber" @getphonenumber="handelMpWeixinMobileLogin($event)" @click="clickPhoneNumber">
       <view class="phone-auth-container">
         <text class="title">手机号快捷登录</text>
       </view>
     </button>
-    <!-- #endif -->
   </view>
 </template>
 
@@ -121,17 +119,38 @@
 <style lang="scss" scoped>
   // 手机号快捷登录
   .phone-auth {
-    width: 320rpx;
-    margin: 50rpx auto 0 auto;
+    margin: 30rpx 0;
+
+    .btn-normal {
+      width: 100%;
+      height: 86rpx;
+      background: transparent;
+      border: 1rpx solid $main-bg;
+      border-radius: 80rpx;
+      box-shadow: 0px 10px 20px 0px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0;
+      margin: 0;
+      
+      &::after {
+        border: none;
+      }
+    }
 
     .phone-auth-container {
       display: flex;
       justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
     }
 
     .title {
       font-size: 28rpx;
-      color: #666666;
+      color: $main-bg;
+      letter-spacing: 5rpx;
     }
   }
 </style>

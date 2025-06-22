@@ -4,6 +4,7 @@
   import { getSceneData, checkLogin } from './core/app'
   import { isObject } from './utils/util'
   import { setupRouterGuard } from './core/permission'
+  import { getHomeSettings } from '@/api/ycontrol'
 
   export default {
 
@@ -17,7 +18,9 @@
       menuBottom: 0, // 胶囊距底部间距（顶部间距也是这个）
       menuHeight: 0, // 胶囊高度
       menuRight: 0, // 胶囊距右边距离
-      menuWidth: 0 // 胶囊宽度
+      menuWidth: 0, // 胶囊宽度
+      // 首页设置信息
+      homeSettings: null
     },
 
     /**
@@ -34,6 +37,8 @@
       this.onStartupQuery(isObject(query) ? query : {})
       // 获取商城基础信息
       this.getStoreInfo()
+      // 预加载首页设置信息
+      this.preloadHomeSettings()
       // 设置路由拦截器
       setupRouterGuard()
       
@@ -52,6 +57,18 @@
       // 获取商城基础信息
       getStoreInfo() {
         StoreModel.data(false)
+      },
+
+      // 预加载首页设置信息
+      preloadHomeSettings() {
+        getHomeSettings().then(result => {
+          this.globalData.homeSettings = result.data.data
+          // 将homeSettings保存到本地存储，供权限控制使用
+          uni.setStorageSync('homeSettings', result.data.data)
+          console.log('预加载首页设置成功:', result.data.data)
+        }).catch(err => {
+          console.log('预加载首页设置失败:', err)
+        })
       },
 
       /**

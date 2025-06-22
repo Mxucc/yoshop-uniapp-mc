@@ -95,8 +95,10 @@ export default {
       },
     }
   },
-  onLoad(options) {
+  async onLoad(options) {
     this.options = options
+    // 优先加载首页设置信息，确保popup能正常弹出
+    await this.loadHomeSettings()
     this.getPageData()
     // 获取分享信息
     this.getShareInfo()
@@ -223,19 +225,37 @@ export default {
         backgroundColor: page.style.titleBackgroundColor
       })
     },
+    // 优先加载首页设置信息
+    loadHomeSettings() {
+      const app = this
+      return new Promise((resolve) => {
+        // 优先从全局数据中获取预加载的设置信息
+        const globalApp = getApp()
+        if (globalApp.globalData.homeSettings) {
+          app.homeSettings = globalApp.globalData.homeSettings
+          console.log('使用预加载的首页设置:', globalApp.globalData.homeSettings)
+          resolve()
+          return
+        }
+        
+        // 如果全局数据中没有，则发起请求
+        YControlApi.getHomeSettings().then(result => {
+          app.homeSettings = result.data.data
+          // 将homeSettings保存到本地存储，供权限控制使用
+          uni.setStorageSync('homeSettings', result.data.data)
+          console.log('获取首页信息成功:', result.data.data)
+          resolve()
+        }).catch(err => {
+          console.log('获取首页信息失败:', err)
+          // 保持默认分享信息
+          resolve()
+        })
+      })
+    },
     // 获取分享信息
     getShareInfo() {
       const app = this
       const path = "index"
-      YControlApi.getHomeSettings().then(result => {
-        app.homeSettings=result.data.data
-        // 将homeSettings保存到本地存储，供权限控制使用
-        uni.setStorageSync('homeSettings', result.data.data)
-        console.log('获取首页信息成功:', result.data.data)
-      }).catch(err => {
-        console.log('获取首页信息失败:', err)
-        // 保持默认分享信息
-      })
       YControlApi.getShareInfo({
         path
       }).then(result => {
