@@ -13,13 +13,14 @@ export default {
    */
   ycontrolApiUrl: "https://yc.xiayingwenhua.xyz/api/",
   ycontrolAuthority:'fb.xiayingwenhua.xyz',
-  logoImg:"/static/fbimg.png",
-  textImg:"/static/fbtext.png",
+  logoImg:"https://fb.xiayingwenhua.xyz/uploads/10001/20250622/2a0774c7b73cb817b84828e6e2ce9c0e.png",
+  textImg:"https://fb.xiayingwenhua.xyz/uploads/10001/20250622/d082b8e400893775f6119e4c23251a40.png",
   // ycontrolApiUrl: "http://localhost:18181/api/",
   /**
    * 是否启用商城设置缓存
    * 将减少用户端重复请求; 正式运营时请设为true, 开启后商城设置同步前端需10分钟缓存
    */
+  
   // 系统名称
   // name: "贸贸亲子游",
   // /**
@@ -33,8 +34,9 @@ export default {
   //  */
   // ycontrolApiUrl: "https://yc.xiayingwenhua.xyz/api/",
   // ycontrolAuthority:'mm.xiayingwenhua.xyz',
-  // logoImg:"/static/fbimg.png",
-  // textImg:"/static/fbtext.png",
-  // enabledSettingCache: true
+  // logoImg:"/static/mmlogo.png",
+  // textImg:"/static/mmtitle.png",
+  
+  enabledSettingCache: true
 
 }

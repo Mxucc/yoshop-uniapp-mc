@@ -1,4 +1,6 @@
 <template>
+  <view>
+  <!-- #ifndef MP-WEIXIN -->
   <view class="container">
     <view>
       <image :src="logoImg" class="login_header"/>
@@ -45,12 +47,12 @@
         <text>登录</text>
       </view>
     </view>
-
+  </view>
+    <!-- #endif -->
     <!-- 微信授权手机号一键登录 -->
     <!-- #ifdef MP-WEIXIN -->
     <MpWeixinMobile v-if="isMpWeixinMobile" :isParty="isParty" :partyData="partyData" />
     <!-- #endif -->
-
   </view>
 </template>
 
