@@ -1,13 +1,29 @@
 import store from '@/store'
 import { checkLogin } from '@/core/app'
 
-// 需要登录才能访问的页面路径
+/**
+ * 获取强制登录设置
+ * @returns {Boolean} 是否强制登录
+ */
+function getForceLoginSetting() {
+  try {
+    // 从本地存储或全局配置中获取forceLogin设置
+    // 这里可以根据实际需求修改获取方式
+    const homeSettings = uni.getStorageSync('homeSettings')
+    if (homeSettings && typeof homeSettings.forceLogin !== 'undefined') {
+      return homeSettings.forceLogin
+    }
+    // 默认不强制登录
+    return false
+  } catch (error) {
+    console.log('获取强制登录设置失败:', error)
+    return false
+  }
+}
+
+// 需要登录才能访问的页面路径（已移除，只保留首页强制登录）
 const loginRequiredPages = [
-  'pages/category/index',
-  'pages/cart/index',
-  'pages/user/index',
-  'pages/custom/index',
-  // 可以根据需要添加更多需要登录的页面
+  // 移除所有页面的强制登录要求，只保留首页的强制登录功能
 ]
 
 // 不需要登录的白名单页面
@@ -70,11 +86,11 @@ function routerGuard(e, navigationType) {
     return true
   }
   
-  // 检查是否需要登录
-  const needLogin = loginRequiredPages.some(page => pagePath.includes(page))
+  // 只检查首页是否需要强制登录
+  const shouldForceLogin = (pagePath === 'pages/index/index' && getForceLoginSetting())
   
-  // 如果需要登录但未登录，则显示提醒但不阻止导航
-  if ((needLogin || pagePath === 'pages/index/index') && !checkLogin()) {
+  // 如果首页需要强制登录但未登录，则显示提醒但不阻止导航
+  if (shouldForceLogin && !checkLogin()) {
     uni.showModal({
       title: '温馨提示',
       content: '本小程序需要登录后才能使用完整功能，是否立即登录？',

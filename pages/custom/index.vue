@@ -2,9 +2,10 @@
   <view class="container" :style="appThemeStyle">
       <!-- 产品视频组件 -->
       <product-video 
-         v-if="options.pageId === '10006'"
-        :video-url="productIntroData.videoUrl"
-        :video-poster="productIntroData.videoPoster"
+         v-if="videoData.enabled"
+        :video-url="videoData.videoUrl"
+        :video-poster="videoData.videoPoster"
+        :isVideoChannel="videoData.isVideoChannel"
         @show-service="onShowService"
         @hide-service="onHideService"
       />
@@ -13,14 +14,15 @@
     
       <!-- 产品内容组件 -->
       <product-content  
-      v-if="options.pageId === '10006'"
-        :content-title="productIntroData.contentTitle"
-        :rich-content="productIntroData.richContent"
+      v-if="articleData.enabled"
+        :content-title="articleData.contentTitle"
+        :rich-content="articleData.richContent"
       />
       <customer-service 
-        :float-text="productIntroData.floatText"
-        :modal-title="productIntroData.modalTitle"
-        :faq-config="productIntroData.faqConfig"
+      v-if="FAQData.enabled"
+        :float-text="FAQData.floatText"
+        :modal-title="FAQData.modalTitle"
+        :faq-config="FAQData.faqConfig"
       ></customer-service>
 
   </view>
@@ -31,8 +33,8 @@
   import Page from '@/components/page'
   import ProductVideo from '@/components/product-intro/product-video'
   import ProductContent from '@/components/product-intro/product-content'
-
   import CustomerService from '@/components/product-intro/customer-service'
+  import * as YControlApi from '@/api/ycontrol'
   export default {
     components: {
       Page,
@@ -48,11 +50,14 @@
         page: {},
         // 页面元素
         items: [],
-        
-        // 产品介绍组件配置数据
-        productIntroData: {
-          videoUrl: 'https://fb.xiayingwenhua.xyz/uploads/10001/20250524/a354294b436d884ee87ba30e1a7dd67d.mp4',
-          videoPoster: '',
+        // 分享信息
+        shareInfo: {
+          title: null,
+          imageUrl: null
+        },
+        // 文章内容数据
+        articleData: {
+          enabled: false,
           contentTitle: '旅程介绍',
           richContent: `
             <div style="padding: 20px; line-height: 1.6; color: #333;">
@@ -62,7 +67,7 @@
 <ul class="gs_cit_stry_pre gs_cit_stry_sm list-paddingleft-2" style="list-style-type: none;">
     <li>
         <p>
-            <span style="font-style: italic; font-weight: 700; touch-action: manipulation;">鼓浪屿</span>：被誉为“海上花园”，拥有美丽的海滩和丰富的历史文化建筑，如日光岩和菽庄花园。&nbsp;
+            <span style="font-style: italic; font-weight: 700; touch-action: manipulation;">鼓浪屿</span>：被判为"海上花园"，拥有美丽的海滩和丰富的历史文化建筑，如日光岩和菽庄花园。&nbsp;
         </p>
     </li>
     <li>
@@ -104,6 +109,10 @@
 </p>
             </div>
           `,
+        },
+        // FAQ数据
+        FAQData: {
+          enabled: false,
           floatText: '帮助',
           modalTitle: '常见问题',
           faqConfig: [
@@ -139,6 +148,13 @@
             }
           ]
         },
+        // 视频数据
+        videoData: {
+          isVideoChannel:false,
+          enabled: false,
+          videoUrl: 'https://fb.xiayingwenhua.xyz/uploads/10001/20250524/a354294b436d884ee87ba30e1a7dd67d.mp4',
+          videoPoster: '',
+        },
       }
     },
 
@@ -150,6 +166,8 @@
       this.options = options
       // 加载页面数据
       this.getPageData()
+      // 获取分享信息
+      this.getInfo()
     },
     methods: {
 
@@ -190,6 +208,52 @@
         })
       },
 
+      // 获取信息
+      getInfo() {
+        const app = this
+        const path = "custom"
+        YControlApi.getShareInfo({
+          number: app.options.pageId,
+          path
+        }).then(result => {
+          app.shareInfo = result.data.data
+          console.log('获取分享信息成功:', result.data.data)
+        }).catch(err => {
+          console.log('获取分享信息失败:', err)
+          // 保持默认分享信息
+        })
+        YControlApi.getVideoData({
+          number: app.options.pageId,
+          path
+        }).then(result => {
+          app.videoData = result.data.data
+          console.log('获取视频信息成功:', result.data.data)
+        }).catch(err => {
+          console.log('获取视频信息失败:', err)
+          // 保持默认分享信息
+        })
+        YControlApi.getArticleData({
+          number: app.options.pageId,
+          path
+        }).then(result => {
+          app.articleData = result.data.data
+          console.log('获取文章信息成功:', result.data.data)
+        }).catch(err => {
+          console.log('获取文章信息失败:', err) 
+          // 保持默认分享信息
+        })
+        YControlApi.getFAQConfigData({
+          number: app.options.pageId,
+          path
+        }).then(result => {
+          app.FAQData = result.data.data
+          console.log('获取问答信息成功:', result.data.data)
+        }).catch(err => {
+          console.log('获取问答信息失败:', err)
+          // 保持默认分享信息
+        })
+      },
+
     },
 
     /**
@@ -205,12 +269,16 @@
     /**
      * 分享当前页面
      */
+    /**
+     * 分享给朋友
+     */
     onShareAppMessage() {
       const app = this
       const { page } = app
       return {
-        title: page.params.shareTitle,
-        path: "/pages/custom/index?" + app.$getShareUrlParams({ pageId: app.options.pageId })
+        title: app.shareInfo.title || page.params.shareTitle || '福博寻宝',
+        path: "/pages/custom/index?" + app.$getShareUrlParams({ pageId: app.options.pageId }),
+        imageUrl: app.shareInfo.imageUrl || '/static/fbback.png'
       }
     },
 
@@ -223,8 +291,9 @@
       const app = this
       const { page } = app
       return {
-        title: page.params.shareTitle,
-        path: "/pages/custom/index?" + app.$getShareUrlParams({ pageId: app.options.pageId })
+        title: app.shareInfo.title || page.params.shareTitle || '福博寻宝',
+        path: "/pages/custom/index?" + app.$getShareUrlParams({ pageId: app.options.pageId }),
+        imageUrl: app.shareInfo.imageUrl || '/static/fbback.png'
       }
     }
 

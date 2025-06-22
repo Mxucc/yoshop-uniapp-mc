@@ -4,7 +4,7 @@ export default {
 		this.$u.mpShare = {
 			title: '', // 默认为小程序名称
 			path: '', // 默认为当前页面路径
-			imageUrl: '' // 默认为当前页面的截图
+			imageUrl: '/static/fbback.png' // 设置默认分享图片
 		}
 	},
 	onShareAppMessage() {

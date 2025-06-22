@@ -12,7 +12,7 @@
       <view class="nav-content" :style="{height: menuHeight + 'px', marginTop: menuBottom + 'px', marginBottom: menuBottom + 'px'}">
         <!-- Logo区域 -->
         <view class="logo-section" :style="{marginRight: menuWidth + menuRight + 'px'}">
-          <text class="logo-text">福博寻宝</text>
+          <text class="logo-text">{{title}}</text>
         </view>
       </view>
       
@@ -28,16 +28,23 @@
     </view>
     
     <Page :items="items" />
-    <u-popup 
+    <u-popup v-if="homeSettings.enabled"
     ref="imagePopup" 
     mode="center" :safe-area-inset-bottom="false" background-color="transparent"
      :custom-style="{padding:0}" :closeable="true" close-icon="close" close-icon-pos="top-right" close-icon-color="#ffffff" 
      :close-icon-size="60" :border-radius="16" @close="closeImagePopup">
-      <image :src="imageUrl" mode="widthFix" style="width: 600rpx; border-radius: 12rpx;" @click="onTargetHome"/>
+      <image :src="homeSettings.imageUrl" mode="widthFix" style="width: 600rpx; border-radius: 12rpx;" @click="onTargetHome"/>
     </u-popup>
     <!-- #ifdef MP-WEIXIN -->
     <PrivacyPopup :hideTabBar="true" />
     <!-- #endif -->
+         <!-- 客服组件 -->
+    <customer-service 
+      v-if="FAQData.enabled"
+      :float-text="FAQData.floatText"
+      :modal-title="FAQData.modalTitle"
+      :faq-config="FAQData.faqConfig"
+    ></customer-service>
   </view>
 </template>
 
@@ -47,6 +54,9 @@ import * as Api from '@/api/page'
 import Page from '@/components/page'
 import PrivacyPopup from '@/components/privacy-popup'
 import uPopup from '@/uni_modules/vk-uview-ui/components/u-popup/u-popup.vue'
+import * as YControlApi from '@/api/ycontrol'
+import CustomerService from '@/components/product-intro/customer-service'
+import Config from '@/core/config'
 
 const App = getApp()
 
@@ -54,26 +64,42 @@ export default {
   components: {
     Page,
     PrivacyPopup,
-    uPopup
+    uPopup,CustomerService
   },
   data() {
     return {
+      title:Config.get('name'),
       options: {},
       page: {},
       items: [],
-      imageUrl: '/static/pop1.png',
+      homeSettings:{
+        enabled: false,
+        imageUrl: '/static/pop1.png',
+        jumpUrl:'pages/coupon/index',
+        forceLogin:false,
+        kvSettings:[]
+      },
       statusBarHeight: 0,
       navBarHeight: 0,
       menuBottom: 0,
       menuHeight: 0,
       menuRight: 0,
-      menuWidth: 0
+      menuWidth: 0,
+      // 分享信息
+      shareInfo: {},
+      FAQData:{
+        enabled: false,
+        floatText: '帮助',
+        modalTitle: '常见问题',
+        faqConfig: []
+      },
     }
   },
   onLoad(options) {
     this.options = options
     this.getPageData()
-    
+    // 获取分享信息
+    this.getShareInfo()
     // 获取全局导航栏信息
     const app = getApp()
     this.statusBarHeight = app.globalData.statusBarHeight
@@ -86,8 +112,13 @@ export default {
   onReady() {
     // const hasShown = uni.getStorageSync('hasShownPopup')
     // if (!hasShown && this.$refs.imagePopup) {
-      this.$refs.imagePopup.open()
-      // uni.setStorageSync('hasShownPopup', true)
+      // 确保popup组件已经渲染后再调用open方法
+      this.$nextTick(() => {
+        if (this.$refs.imagePopup && this.homeSettings.enabled) {
+          this.$refs.imagePopup.open()
+          // uni.setStorageSync('hasShownPopup', true)
+        }
+      })
     // }
   },
   onShow() {
@@ -162,7 +193,7 @@ export default {
       }
     },
     onTargetHome() {
-      this.$navTo('pages/coupon/index')
+      this.$navTo(this.homeSettings.jumpUrl)
     },
     /**
      * 跳转到搜索页面
@@ -191,27 +222,67 @@ export default {
         frontColor: page.style.titleTextColor === 'white' ? '#ffffff' : '#000000',
         backgroundColor: page.style.titleBackgroundColor
       })
-    }
+    },
+    // 获取分享信息
+    getShareInfo() {
+      const app = this
+      const path = "index"
+      YControlApi.getHomeSettings().then(result => {
+        app.homeSettings=result.data.data
+        // 将homeSettings保存到本地存储，供权限控制使用
+        uni.setStorageSync('homeSettings', result.data.data)
+        console.log('获取首页信息成功:', result.data.data)
+      }).catch(err => {
+        console.log('获取首页信息失败:', err)
+        // 保持默认分享信息
+      })
+      YControlApi.getShareInfo({
+        path
+      }).then(result => {
+        app.shareInfo = result.data.data
+        console.log('获取分享信息成功:', result.data.data)
+      }).catch(err => {
+        console.log('获取分享信息失败:', err)
+        // 保持默认分享信息
+      })
+      YControlApi.getFAQConfigData({
+          path
+        }).then(result => {
+          app.FAQData = result.data.data
+          console.log('获取问答信息成功:', result.data.data)
+        }).catch(err => {
+          console.log('获取问答信息失败:', err)
+          // 保持默认分享信息
+        })
+    },
   },
   onPullDownRefresh() {
     this.getPageData(() => {
       uni.stopPullDownRefresh()
     })
   },
+  /**
+   * 分享给朋友
+   */
   onShareAppMessage() {
     const app = this
     const { page } = app
     return {
-      title: page.params.shareTitle,
-      path: "/pages/index/index?" + app.$getShareUrlParams()
+      title: app.shareInfo.title || page.params.shareTitle || '福博寻宝',
+      path: "/pages/index/index?" + app.$getShareUrlParams(),
+      imageUrl: app.shareInfo.imageUrl || '/static/fbback.png'
     }
   },
+  /**
+   * 分享到朋友圈
+   */
   onShareTimeline() {
     const app = this
     const { page } = app
     return {
-      title: page.params.shareTitle,
-      path: "/pages/index/index?" + app.$getShareUrlParams()
+      title: app.shareInfo.title || page.params.shareTitle || '福博寻宝',
+      path: "/pages/index/index?" + app.$getShareUrlParams(),
+      imageUrl: app.shareInfo.imageUrl || '/static/fbback.png'
     }
   }
 }

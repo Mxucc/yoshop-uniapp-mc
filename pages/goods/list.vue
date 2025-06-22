@@ -4,12 +4,22 @@
       @up="upCallback">
       <!-- 产品视频组件 -->
       <product-video 
-        v-if="options.categoryId === productIntroData.categoryId"
-        :video-url="productIntroData.videoUrl"
-        :video-poster="productIntroData.videoPoster"
+        v-if="videoData.enabled"
+        :video-url="videoData.videoUrl"
+        :video-poster="videoData.videoPoster"
+        :isVideoChannel="videoData.isVideoChannel"
+        :feed-id="videoData.feedId"
+        :finder-user-name="videoData.finderUserName"
         @show-service="onShowService"
         @hide-service="onHideService"
       />
+      <!-- 客服组件 -->
+      <customer-service 
+        v-if="FAQData.enabled"
+        :float-text="FAQData.floatText"
+        :modal-title="FAQData.modalTitle"
+        :faq-config="FAQData.faqConfig"
+      ></customer-service>
       <!-- 页面头部 -->
       <view class="header">
         <view class="search">
@@ -95,19 +105,12 @@
       
       <!-- 产品内容组件 -->
       <product-content 
-        v-if="options.categoryId === productIntroData.categoryId"
-        :content-title="productIntroData.contentTitle"
-        :rich-content="productIntroData.richContent"
+        v-if="articleData.enabled"
+        :content-title="articleData.contentTitle"
+        :rich-content="articleData.richContent"
       />
     </mescroll-body>
     
-    <!-- 客服组件 -->
-    <customer-service 
-      v-if="options.categoryId === productIntroData.categoryId"
-      :float-text="productIntroData.floatText"
-      :modal-title="productIntroData.modalTitle"
-      :faq-config="productIntroData.faqConfig"
-    ></customer-service>
   </view>
 </template>
 
@@ -119,6 +122,7 @@
   import ProductVideo from '@/components/product-intro/product-video'
 import ProductContent from '@/components/product-intro/product-content'
 import CustomerService from '@/components/product-intro/customer-service'
+  import * as YControlApi from '@/api/ycontrol'
 
   const pageSize = 15
   const showViewKey = 'GoodsList-ShowView';
@@ -138,29 +142,33 @@ import CustomerService from '@/components/product-intro/customer-service'
         sortPrice: false, // 价格排序 (true高到低 false低到高)
         options: {}, // 当前页面参数
         list: getEmptyPaginateObj(), // 商品列表数据
-        
-        // 产品介绍组件配置数据
-        productIntroData: {
-          categoryId: '10003',
-          videoUrl: 'https://fb.xiayingwenhua.xyz/uploads/10001/20250524/a354294b436d884ee87ba30e1a7dd67d.mp4',
-          videoPoster: '',
+        // 分享信息
+        shareInfo: {
+          title: null,
+          imageUrl: null
+        },
+        articleData:{
+          enabled: false,
           contentTitle: '旅程介绍',
           richContent: `
-            <div style="padding: 20px; line-height: 1.6; color: #333;">
-              <p style="text-wrap-mode: wrap;">
-    1、来特区馆感受鹭岛发展历程，在改革开放的时光长廊里，共寻特区宝藏<br/>
-</p>
-<p style="text-wrap-mode: wrap;">
-    2、在筼筜湖畔品茶与汉服体验
-</p>
-<p style="text-wrap-mode: wrap;">
-    3、红树林里种植一颗希望树，传承“和谐共生”的家风理念
-</p>
-<p style="text-wrap-mode: wrap;">
-    4、从竹坝南洋风情和南洋美食里，在华侨带来音乐舞蹈和精彩互动游戏中，沉浸式感悟文化融会的愉悦
-</p>
+                    <div style="padding: 20px; line-height: 1.6; color: #333;">
+                      <p style="text-wrap-mode: wrap;">
+            1、来特区馆感受鹭岛发展历程，在改革开放的时光长廊里，共寻特区宝藏<br/>
+        </p>
+        <p style="text-wrap-mode: wrap;">
+            2、在筼筜湖畔品茶与汉服体验
+        </p>
+        <p style="text-wrap-mode: wrap;">
+            3、红树林里种植一颗希望树，传承“和谐共生”的家风理念
+        </p>
+        <p style="text-wrap-mode: wrap;">
+            4、从竹坝南洋风情和南洋美食里，在华侨带来音乐舞蹈和精彩互动游戏中，沉浸式感悟文化融会的愉悦
+        </p>
             </div>
           `,
+        },
+        FAQData:{
+          enabled: false,
           floatText: '帮助',
           modalTitle: '常见问题',
           faqConfig: [
@@ -194,7 +202,15 @@ import CustomerService from '@/components/product-intro/customer-service'
               answer: '费用包含：专业导游服务、景点门票、特色体验活动、汉服租赁、茶艺体验、互动游戏道具等。不含餐食和个人消费。',
               defaultExpanded: false
             }
-          ]
+          ]},
+        // 产品介绍组件配置数据
+        videoData: {
+          enabled: false,
+          isVideoChannel: false,
+          videoUrl: 'https://fb.xiayingwenhua.xyz/uploads/10001/20250524/a354294b436d884ee87ba30e1a7dd67d.mp4',
+          videoPoster: '',
+          feedId: 'token/AGzpDeQXN',
+          finderUserName: 'MoeXiao'
         },
         // 上拉加载配置
         upOption: {
@@ -216,6 +232,8 @@ import CustomerService from '@/components/product-intro/customer-service'
       this.options = options
       // 设置默认列表显示方式
       this.setShowView()
+      // 获取分享信息
+      this.getShareInfo()
     },
 
     methods: {
@@ -307,6 +325,48 @@ import CustomerService from '@/components/product-intro/customer-service'
         this.$navTo(searchPageUrl)
       },
 
+      // 获取分享信息
+      getShareInfo() {
+        const path = "list"
+        const app = this
+        YControlApi.getShareInfo({
+          number: app.options.categoryId,
+          path: path
+        }).then(result => {
+          app.shareInfo = result.data.data
+        }).catch(err => {
+          console.log('获取分享信息失败:', err)
+          // 保持默认分享信息
+        })
+        YControlApi.getVideoData({
+          number: app.options.categoryId,
+          path:path
+        }).then(result => {
+          app.videoData = result.data.data
+        }).catch(err => {
+          console.log('获取视频信息失败:', err)
+          // 保持默认分享信息
+        })
+        YControlApi.getArticleData({
+          number: app.options.categoryId,
+          path:path
+        }).then(result => {
+          app.articleData = result.data.data
+        }).catch(err => {
+          console.log('获取文章信息失败:', err) 
+          // 保持默认分享信息
+        })
+        YControlApi.getFAQConfigData({
+          number: app.options.categoryId,
+          path:path
+        }).then(result => {
+          app.FAQData = result.data.data
+        }).catch(err => {
+          console.log('获取问答信息失败:', err)
+          // 保持默认分享信息
+        })
+      },
+
     },
 
     /**
@@ -316,8 +376,9 @@ import CustomerService from '@/components/product-intro/customer-service'
       // 构建分享参数
       const app = this
       return {
-        title: "商品列表",
-        path: "/pages/goods/list?" + this.$getShareUrlParams(app.options)
+        title: app.shareInfo.title || "福博寻宝 - 商品列表",
+        path: "/pages/goods/list?" + this.$getShareUrlParams(app.options),
+        imageUrl: app.shareInfo.imageUrl || '/static/fbback.png'
       }
     },
 
@@ -330,8 +391,9 @@ import CustomerService from '@/components/product-intro/customer-service'
       // 构建分享参数
       const app = this
       return {
-        title: "商品列表",
-        path: "/pages/goods/list?" + this.$getShareUrlParams(app.options)
+        title: app.shareInfo.title || "福博寻宝 - 商品列表",
+        path: "/pages/goods/list?" + this.$getShareUrlParams(app.options),
+        imageUrl: app.shareInfo.imageUrl || '/static/fbback.png'
       }
     }
 

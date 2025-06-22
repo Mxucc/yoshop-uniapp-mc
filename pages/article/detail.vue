@@ -22,7 +22,7 @@
 <script>
   import Shortcut from '@/components/shortcut'
   import * as ArticleApi from '@/api/article'
-
+  import * as YControlApi from '@/api/ycontrol'
   export default {
     components: {
       Shortcut
@@ -34,7 +34,12 @@
         // 加载中
         isLoading: true,
         // 当前文章详情
-        detail: null
+        detail: null,
+        // 分享信息
+        shareInfo: {
+          title: null,
+          imageUrl: null
+        }
       }
     },
 
@@ -46,6 +51,8 @@
       this.articleId = options.articleId
       // 获取文章详情
       this.getArticleDetail()
+      // 获取分享信息
+      this.getShareInfo()
     },
 
     methods: {
@@ -59,7 +66,20 @@
             app.detail = result.data.detail
           })
           .finally(() => app.isLoading = false)
-      }
+      },
+      // 获取分享信息
+      getShareInfo() {
+        const app = this
+        const path = "detail"
+        YControlApi.getShareInfo({
+          path
+        }).then(result => {
+          app.shareInfo = result.data.data
+        }).catch(err => {
+          console.log('获取分享信息失败:', err)
+          // 保持默认分享信息
+        })
+      },
 
     },
 
@@ -71,8 +91,9 @@
       // 构建页面参数
       const params = app.$getShareUrlParams({ articleId: app.articleId });
       return {
-        title: app.detail.title,
-        path: "/pages/article/detail?" + params
+        title: app.shareInfo.title || app.detail?.title || '福博寻宝文章',
+        path: "/pages/article/detail?" + params,
+        imageUrl: app.shareInfo.imageUrl || '/static/fbback.png'
       }
     },
 
@@ -86,8 +107,9 @@
       // 构建页面参数
       const params = app.$getShareUrlParams({ articleId: app.articleId });
       return {
-        title: app.detail.title,
-        path: "/pages/article/detail?" + params
+        title: app.shareInfo.title || app.detail?.title || '福博寻宝文章',
+        path: "/pages/article/detail?" + params,
+        imageUrl: app.shareInfo.imageUrl || '/static/fbback.png'
       }
     }
 

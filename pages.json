@@ -57,7 +57,10 @@
     {
       "path": "pages/custom/index",
       "style": {
-        "enablePullDownRefresh": true
+        "enablePullDownRefresh": true,
+        "usingComponents": {
+          "channel-video": "/wxcomponents/channel-video/index"
+        }
       }
     },
     {
@@ -112,10 +115,10 @@
       "path": "pages/goods/list",
       "style": {
         "navigationBarTitleText": "踏上行程",
+        "enablePullDownRefresh": true,
         "usingComponents": {
-        	"channel-video": "/wxcomponents/channel-video/index"
-        },
-        "enablePullDownRefresh": true
+          "channel-video": "/wxcomponents/channel-video/index"
+        }
       }
     },
     {

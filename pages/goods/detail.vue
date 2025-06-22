@@ -59,19 +59,19 @@
 
     <!-- 公众号跳转组件 -->
     <WechatJump 
-      title="转到公众号" 
-      subtitle="了解旅游路线和观赏视频" 
-      button-text="立即关注"
-      jump-url="https://mp.weixin.qq.com/s/sNk6L-JDasEBBuVqH8RlHA" 
+      :title="WechatJump.title" 
+      :subtitle="WechatJump.subtitle" 
+      :button-text="WechatJump.buttonText"
+      :jump-url="WechatJump.jumpUrl" 
     />
     
     <!-- 小程序跳转组件 -->
     <MiniprogramJump 
-      title="打开小程序" 
-      subtitle="获取更多服务和优惠" 
-      button-text="去打开"
-      app-id="wxfa54805b1df3352f"
-      path="pagesShop/pages/topicNew/topicNew?id=386&name台湾手信"
+      :title="MiniprogramJump.title" 
+      :subtitle="MiniprogramJump.subtitle" 
+      :button-text="MiniprogramJump.buttonText"
+      :app-id="MiniprogramJump.appId"
+      :path="MiniprogramJump.path"
       :extra-data="{ goodsId: goodsId }" 
     />
     
@@ -175,6 +175,13 @@
     <!-- 分享菜单 -->
     <share-sheet v-model="showShareSheet" :shareTitle="goods.goods_name" :shareImageUrl="goods.goods_image" />
 
+    <!-- 客服组件 -->
+    <customer-service 
+      v-if="FAQData.enabled"
+      :float-text="FAQData.floatText"
+      :modal-title="FAQData.modalTitle"
+      :faq-config="FAQData.faqConfig"
+    ></customer-service>
   </view>
 </template>
 
@@ -193,6 +200,8 @@
   import WechatJump from '@/components/product-intro/wechat-jump'
   import MiniprogramJump from '@/components/product-intro/miniprogram-jump'
   import { onLink } from '@/core/app'
+  import * as YControlApi from '@/api/ycontrol'
+  import CustomerService from '@/components/product-intro/customer-service'
 
   export default {
     components: {
@@ -204,7 +213,8 @@
       Service,
       WechatJump,
       MiniprogramJump,
-      onLink
+      onLink,
+      CustomerService
     },
     data() {
       return {
@@ -228,6 +238,32 @@
         isShowCustomerBtn: false,
         // 当前激活的标签索引
         activeTabIndex: 0,
+        // 分享信息
+        shareInfo: {
+          title: null,
+          imageUrl: null
+        },
+        FAQData:{
+          enabled: false,
+          floatText: '帮助',
+          modalTitle: '常见问题',
+          faqConfig: []
+        },
+        WechatJump:{
+          enabled:false,
+          title:"转到公众号" ,
+          subtitle:"了解旅游路线和观赏视频" ,
+          buttonText:"立即关注",
+          jumpUrl:"https://mp.weixin.qq.com/s/sNk6L-JDasEBBuVqH8RlHA" 
+        },
+        MiniprogramJump:{
+          enabled:false,
+          title:"打开小程序" ,
+          subtitle:"获取更多服务和优惠" ,
+          buttonText:"去打开",
+          appId:"wxfa54805b1df3352f",
+          path:"pagesShop/pages/topicNew/topicNew?id=386&name台湾手信"
+        }
       }
     },
     computed: {
@@ -246,6 +282,8 @@
       this.onRecordQuery(options)
       // 加载页面数据
       this.onRefreshPage()
+      // 获取分享信息
+      this.getShareInfo()
       // 是否显示在线客服按钮
       this.isShowCustomerBtn = await SettingModel.isShowCustomerBtn()
     },
@@ -334,8 +372,44 @@
         this.$navTo('pages/cart/index')
       },
 
-
-
+      // 获取分享信息
+      getShareInfo() {
+        const app = this
+        const path = "detail"
+        YControlApi.getShareInfo({
+          path
+        }).then(result => {
+          app.shareInfo = result.data.data
+        }).catch(err => {
+          console.log('获取分享信息失败:', err)
+        })
+        YControlApi.getFAQConfigData({
+          number: this.goodsId,
+          path
+        }).then(result => {
+          app.FAQData = result.data.data
+          console.log('获取问答信息成功:', result.data.data)
+        }).catch(err => {
+          console.log('获取问答信息失败:', err)
+        })
+        
+        YControlApi.getWechatInfo({
+          number: this.goodsId,
+        }).then(result => {
+          app.WechatJump = result.data.data
+          console.log('获取微信公众信息成功:', result.data.data)
+        }).catch(err => {
+          console.log('获取微信公众信息失败:', err)
+        })
+        YControlApi.getMiniprogram({
+          number: this.goodsId,
+        }).then(result => {
+          app.MiniprogramJump = result.data.data
+          console.log('获取微信小程序信息成功:', result.data.data)
+        }).catch(err => {
+          console.log('获取微信小程序信息失败:', err)
+        })
+      },
     },
 
     /**
@@ -343,8 +417,9 @@
      */
     onShareAppMessage() {
       return {
-        title: this.goods.goods_name,
-        path: this.pagePath
+        title: this.shareInfo.title || this.goods.goods_name || '福博寻宝商品',
+        path: this.pagePath,
+        imageUrl: this.shareInfo.imageUrl || this.goods.goods_image || '/static/fbback.png'
       }
     },
 
@@ -355,8 +430,9 @@
      */
     onShareTimeline() {
       return {
-        title: this.goods.goods_name,
-        path: this.pagePath
+        title: this.shareInfo.title || this.goods.goods_name || '福博寻宝商品',
+        path: this.pagePath,
+        imageUrl: this.shareInfo.imageUrl || this.goods.goods_image || '/static/fbback.png'
       }
     }
   }
