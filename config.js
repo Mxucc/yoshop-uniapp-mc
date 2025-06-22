@@ -34,8 +34,8 @@ export default {
   //  */
   // ycontrolApiUrl: "https://yc.xiayingwenhua.xyz/api/",
   // ycontrolAuthority:'mm.xiayingwenhua.xyz',
-  // logoImg:"/static/mmlogo.png",
-  // textImg:"/static/mmtitle.png",
+  // logoImg:"https://mm.xiayingwenhua.xyz/uploads/10001/20250622/274ea7514d245920f396f8828f6e3067.png",
+  // textImg:"https://mm.xiayingwenhua.xyz/uploads/10001/20250622/03a2f6b0f043b454b6c38ebcb1532629.png",
   
   enabledSettingCache: true
 
