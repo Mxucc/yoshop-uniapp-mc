@@ -1,17 +1,46 @@
 <template>
   <view class="container" :style="appThemeStyle">
+      <!-- 产品视频组件 -->
+      <product-video 
+         v-if="videoData.enabled"
+        :video-url="videoData.videoUrl"
+        :video-poster="videoData.videoPoster"
+        :isVideoChannel="videoData.isVideoChannel"
+        @show-service="onShowService"
+        @hide-service="onHideService"
+      />
     <!-- 店铺页面组件 -->
     <Page :items="items" />
+    
+      <!-- 产品内容组件 -->
+      <product-content  
+      v-if="articleData.enabled"
+        :content-title="articleData.contentTitle"
+        :rich-content="articleData.richContent"
+      />
+      <customer-service 
+      v-if="FAQData.enabled"
+        :float-text="FAQData.floatText"
+        :modal-title="FAQData.modalTitle"
+        :faq-config="FAQData.faqConfig"
+      ></customer-service>
+
   </view>
 </template>
 
 <script>
   import * as Api from '@/api/page'
   import Page from '@/components/page'
-
+  import ProductVideo from '@/components/product-intro/product-video'
+  import ProductContent from '@/components/product-intro/product-content'
+  import CustomerService from '@/components/product-intro/customer-service'
+  import * as YControlApi from '@/api/ycontrol'
   export default {
     components: {
-      Page
+      Page,
+      ProductVideo,
+      ProductContent,
+      CustomerService
     },
     data() {
       return {
@@ -20,7 +49,112 @@
         // 页面属性
         page: {},
         // 页面元素
-        items: []
+        items: [],
+        // 分享信息
+        shareInfo: {
+          title: null,
+          imageUrl: null
+        },
+        // 文章内容数据
+        articleData: {
+          enabled: false,
+          contentTitle: '旅程介绍',
+          richContent: `
+            <div style="padding: 20px; line-height: 1.6; color: #333;">
+              <p>
+    厦门旅游的<span style="font-style: italic; font-weight: 700;">必去景点</span>包括：
+</p>
+<ul class="gs_cit_stry_pre gs_cit_stry_sm list-paddingleft-2" style="list-style-type: none;">
+    <li>
+        <p>
+            <span style="font-style: italic; font-weight: 700; touch-action: manipulation;">鼓浪屿</span>：被判为"海上花园"，拥有美丽的海滩和丰富的历史文化建筑，如日光岩和菽庄花园。&nbsp;
+        </p>
+    </li>
+    <li>
+        <p>
+            <span style="font-style: italic; font-weight: 700; touch-action: manipulation;">厦门大学</span>：风景如画的校园，免费开放，但需提前预约。&nbsp;
+        </p>
+    </li>
+    <li>
+        <p>
+            <span style="font-style: italic; font-weight: 700; touch-action: manipulation;">南普陀寺</span>：历史悠久的佛教寺庙，香火鼎盛，免费参观。&nbsp;
+        </p>
+    </li>
+    <li>
+        <p>
+            <span style="font-style: italic; font-weight: 700; touch-action: manipulation;">环岛路</span>：适合骑行的海岸线，沿途风景优美。&nbsp;
+        </p>
+    </li>
+</ul>
+<p></p>
+<ul class="gs_cit_stry_pre gs_cit_stry_sm list-paddingleft-2" style="list-style-type: none;">
+    <li>
+        <p>
+            <span style="font-style: italic; font-weight: 700; touch-action: manipulation;">曾厝垵</span>：文艺气息浓厚的渔村，适合漫步和拍照。&nbsp;
+        </p>
+    </li>
+    <li>
+        <p>
+            <span style="font-style: italic; font-weight: 700; touch-action: manipulation;">胡里山炮台</span>：保存完好的历史炮台，具有独特的建筑风格。&nbsp;
+        </p>
+    </li>
+    <li>
+        <p>
+            <span style="font-style: italic; font-weight: 700; touch-action: manipulation;">中山路步行街</span>：体验当地美食和购物的好去处。
+        </p>
+    </li>
+</ul>
+<p>
+    <br/>
+</p>
+            </div>
+          `,
+        },
+        // FAQ数据
+        FAQData: {
+          enabled: false,
+          floatText: '帮助',
+          modalTitle: '常见问题',
+          faqConfig: [
+            {
+              question: '如何加入交流群？',
+              type: 'qrcode',
+              qrTitle: '扫码进群咨询',
+              qrCodeUrl: 'https://fb.xiayingwenhua.xyz/uploads/10001/20250607/b2c84e348209e63a4094f84f4e9c39fc.jpg',
+              saveTip: '长按识别二维码加入群聊',
+              defaultExpanded: true
+            },
+            {
+              question: '厦门旅游最佳时间？',
+              type: 'text',
+              answer: '厦门四季如春，全年都适合旅游。春秋两季（3-5月、9-11月）气候最为宜人，是最佳旅游时间。夏季虽然炎热但海边凉爽，冬季温和少雨。',
+              defaultExpanded: false
+            },
+            {
+              question: '厦门有哪些必去景点？',
+              type: 'text',
+              answer: '鼓浪屿（海上花园）、厦门大学（最美校园）、南普陀寺（千年古刹）、环岛路（海岸骑行）、曾厝垵（文艺渔村）、胡里山炮台（历史遗迹）、中山路步行街（美食购物）等。',
+              defaultExpanded: false
+            },
+            {
+              question: '如何联系客服？',
+              type: 'contact',
+              contacts: [
+                { label: '客服微信', value: 'totalsea' },
+                { label: '客服电话', value: '177-5002-0397' },
+                { label: '服务时间', value: '10:00-18:00' }
+              ],
+              defaultExpanded: false
+            }
+          ]
+        },
+        // 视频数据
+        videoData: {
+          isVideoChannel:false,
+          enabled: false,
+          videoUrl: 'https://fb.xiayingwenhua.xyz/uploads/10001/20250524/a354294b436d884ee87ba30e1a7dd67d.mp4',
+          videoPoster: '',
+        },
       }
     },
 
@@ -32,6 +166,8 @@
       this.options = options
       // 加载页面数据
       this.getPageData()
+      // 获取分享信息
+      this.getInfo()
     },
     methods: {
 
@@ -72,6 +208,52 @@
         })
       },
 
+      // 获取信息
+      getInfo() {
+        const app = this
+        const path = "custom"
+        YControlApi.getShareInfo({
+          number: app.options.pageId,
+          path
+        }).then(result => {
+          app.shareInfo = result.data.data
+          console.log('获取分享信息成功:', result.data.data)
+        }).catch(err => {
+          console.log('获取分享信息失败:', err)
+          // 保持默认分享信息
+        })
+        YControlApi.getVideoData({
+          number: app.options.pageId,
+          path
+        }).then(result => {
+          app.videoData = result.data.data
+          console.log('获取视频信息成功:', result.data.data)
+        }).catch(err => {
+          console.log('获取视频信息失败:', err)
+          // 保持默认分享信息
+        })
+        YControlApi.getArticleData({
+          number: app.options.pageId,
+          path
+        }).then(result => {
+          app.articleData = result.data.data
+          console.log('获取文章信息成功:', result.data.data)
+        }).catch(err => {
+          console.log('获取文章信息失败:', err) 
+          // 保持默认分享信息
+        })
+        YControlApi.getFAQConfigData({
+          number: app.options.pageId,
+          path
+        }).then(result => {
+          app.FAQData = result.data.data
+          console.log('获取问答信息成功:', result.data.data)
+        }).catch(err => {
+          console.log('获取问答信息失败:', err)
+          // 保持默认分享信息
+        })
+      },
+
     },
 
     /**
@@ -87,12 +269,16 @@
     /**
      * 分享当前页面
      */
+    /**
+     * 分享给朋友
+     */
     onShareAppMessage() {
       const app = this
       const { page } = app
       return {
-        title: page.params.shareTitle,
-        path: "/pages/custom/index?" + app.$getShareUrlParams({ pageId: app.options.pageId })
+        title: app.shareInfo.title || page.params.shareTitle || '福博寻宝',
+        path: "/pages/custom/index?" + app.$getShareUrlParams({ pageId: app.options.pageId }),
+        imageUrl: app.shareInfo.imageUrl || '/static/fbback.png'
       }
     },
 
@@ -105,8 +291,9 @@
       const app = this
       const { page } = app
       return {
-        title: page.params.shareTitle,
-        path: "/pages/custom/index?" + app.$getShareUrlParams({ pageId: app.options.pageId })
+        title: app.shareInfo.title || page.params.shareTitle || '福博寻宝',
+        path: "/pages/custom/index?" + app.$getShareUrlParams({ pageId: app.options.pageId }),
+        imageUrl: app.shareInfo.imageUrl || '/static/fbback.png'
       }
     }
 

@@ -1,11 +1,12 @@
 <template>
+  <view>
+  <!-- #ifndef MP-WEIXIN -->
   <view class="container">
-
     <view>
-      <image src="/static/fbimg.png" class="login_header"/>
+      <image :src="logoImg" class="login_header"/>
     </view>
      <view>
-      <image src="/static/fbtext.png" class="text_header"/>
+      <image :src="textImg" class="text_header"/>
     </view>
    <!-- 页面头部 -->
     <view class="header">
@@ -46,12 +47,12 @@
         <text>登录</text>
       </view>
     </view>
-
+  </view>
+    <!-- #endif -->
     <!-- 微信授权手机号一键登录 -->
     <!-- #ifdef MP-WEIXIN -->
     <MpWeixinMobile v-if="isMpWeixinMobile" :isParty="isParty" :partyData="partyData" />
     <!-- #endif -->
-
   </view>
 </template>
 
@@ -60,6 +61,7 @@
   import * as CaptchaApi from '@/api/captcha'
   import * as Verify from '@/utils/verify'
   import MpWeixinMobile from './mp-weixin-mobile'
+  import Config from '@/core/config'
 
   // 倒计时时长(秒)
   const times = 60
@@ -92,6 +94,8 @@
 
     data() {
       return {
+        logoImg: Config.get('logoImg'),
+        textImg: Config.get('textImg'),
         // 正在加载
         isLoading: false,
         // 按钮禁用
@@ -280,7 +284,7 @@
   .container {
     padding: 50rpx 60rpx;
     min-height: 100vh;
-    background: linear-gradient(180deg, #00a2ff, #ffffff);
+    background: linear-gradient(180deg, #2F96F8, #ffffff);
   }
 
   .login_header{
@@ -293,8 +297,8 @@
   .text_header{
       display: block;
       margin: 0 auto;
-      width: 525rpx;
-      height: 185rpx;
+      width: 533rpx;
+      height: 306rpx;
       object-fit: contain;
   }
 

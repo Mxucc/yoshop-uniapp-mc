@@ -2,10 +2,28 @@
   <view class="container" :style="appThemeStyle">
     <mescroll-body ref="mescrollRef" :sticky="true" @init="mescrollInit" :down="{ native: true }" @down="downCallback" :up="upOption"
       @up="upCallback">
+      <!-- 产品视频组件 -->
+      <product-video 
+        v-if="videoData.enabled"
+        :video-url="videoData.videoUrl"
+        :video-poster="videoData.videoPoster"
+        :isVideoChannel="videoData.isVideoChannel"
+        :feed-id="videoData.feedId"
+        :finder-user-name="videoData.finderUserName"
+        @show-service="onShowService"
+        @hide-service="onHideService"
+      />
+      <!-- 客服组件 -->
+      <customer-service 
+        v-if="FAQData.enabled"
+        :float-text="FAQData.floatText"
+        :modal-title="FAQData.modalTitle"
+        :faq-config="FAQData.faqConfig"
+      ></customer-service>
       <!-- 页面头部 -->
       <view class="header">
         <view class="search">
-          <search :tips="options.search ? options.search : '搜索商品'" @event="handleSearch" />
+          <search :tips="options.search ? options.search : '搜索~'" @event="handleSearch" />
         </view>
         <!-- 切换列表显示方式 -->
         <view class="show-view" @click="handleShowView">
@@ -84,7 +102,15 @@
           </view>
         </view>
       </view>
+      
+      <!-- 产品内容组件 -->
+      <product-content 
+        v-if="articleData.enabled"
+        :content-title="articleData.contentTitle"
+        :rich-content="articleData.richContent"
+      />
     </mescroll-body>
+    
   </view>
 </template>
 
@@ -93,13 +119,20 @@
   import * as GoodsApi from '@/api/goods'
   import { getEmptyPaginateObj, getMoreListData } from '@/core/app'
   import Search from '@/components/search'
+  import ProductVideo from '@/components/product-intro/product-video'
+import ProductContent from '@/components/product-intro/product-content'
+import CustomerService from '@/components/product-intro/customer-service'
+  import * as YControlApi from '@/api/ycontrol'
 
   const pageSize = 15
   const showViewKey = 'GoodsList-ShowView';
 
   export default {
     components: {
-      Search
+      Search,
+      ProductVideo,
+      ProductContent,
+      CustomerService
     },
     mixins: [MescrollMixin],
     data() {
@@ -109,7 +142,76 @@
         sortPrice: false, // 价格排序 (true高到低 false低到高)
         options: {}, // 当前页面参数
         list: getEmptyPaginateObj(), // 商品列表数据
-
+        // 分享信息
+        shareInfo: {
+          title: null,
+          imageUrl: null
+        },
+        articleData:{
+          enabled: false,
+          contentTitle: '旅程介绍',
+          richContent: `
+                    <div style="padding: 20px; line-height: 1.6; color: #333;">
+                      <p style="text-wrap-mode: wrap;">
+            1、来特区馆感受鹭岛发展历程，在改革开放的时光长廊里，共寻特区宝藏<br/>
+        </p>
+        <p style="text-wrap-mode: wrap;">
+            2、在筼筜湖畔品茶与汉服体验
+        </p>
+        <p style="text-wrap-mode: wrap;">
+            3、红树林里种植一颗希望树，传承“和谐共生”的家风理念
+        </p>
+        <p style="text-wrap-mode: wrap;">
+            4、从竹坝南洋风情和南洋美食里，在华侨带来音乐舞蹈和精彩互动游戏中，沉浸式感悟文化融会的愉悦
+        </p>
+            </div>
+          `,
+        },
+        FAQData:{
+          enabled: false,
+          floatText: '帮助',
+          modalTitle: '常见问题',
+          faqConfig: [
+            {
+              question: '如何加入交流群？',
+              type: 'qrcode',
+              qrTitle: '扫码进群咨询',
+              qrCodeUrl: 'https://fb.xiayingwenhua.xyz/uploads/10001/20250607/b2c84e348209e63a4094f84f4e9c39fc.jpg',
+              saveTip: '长按识别二维码加入群聊',
+              defaultExpanded: true
+            },
+            {
+              question: '旅程包含哪些体验？',
+              type: 'text',
+              answer: '1、特区馆感受鹭岛发展历程，共寻特区宝藏\n2、筼筜湖畔品茶与汉服体验\n3、红树林种植希望树，传承家风理念\n4、竹坝南洋风情美食，华侨音乐舞蹈互动',
+              defaultExpanded: false
+            },
+            {
+              question: '如何预订和咨询？',
+              type: 'contact',
+              contacts: [
+                { label: '客服微信', value: 'totalsea' },
+                { label: '客服电话', value: '177-5002-0397' },
+                { label: '服务时间', value: '10:00-18:00' }
+              ],
+              defaultExpanded: false
+            },
+            {
+              question: '费用包含什么？',
+              type: 'text',
+              answer: '费用包含：专业导游服务、景点门票、特色体验活动、汉服租赁、茶艺体验、互动游戏道具等。不含餐食和个人消费。',
+              defaultExpanded: false
+            }
+          ]},
+        // 产品介绍组件配置数据
+        videoData: {
+          enabled: false,
+          isVideoChannel: false,
+          videoUrl: 'https://fb.xiayingwenhua.xyz/uploads/10001/20250524/a354294b436d884ee87ba30e1a7dd67d.mp4',
+          videoPoster: '',
+          feedId: 'token/AGzpDeQXN',
+          finderUserName: 'MoeXiao'
+        },
         // 上拉加载配置
         upOption: {
           // 首次自动执行
@@ -130,6 +232,8 @@
       this.options = options
       // 设置默认列表显示方式
       this.setShowView()
+      // 获取分享信息
+      this.getShareInfo()
     },
 
     methods: {
@@ -221,6 +325,48 @@
         this.$navTo(searchPageUrl)
       },
 
+      // 获取分享信息
+      getShareInfo() {
+        const path = "list"
+        const app = this
+        YControlApi.getShareInfo({
+          number: app.options.categoryId,
+          path: path
+        }).then(result => {
+          app.shareInfo = result.data.data
+        }).catch(err => {
+          console.log('获取分享信息失败:', err)
+          // 保持默认分享信息
+        })
+        YControlApi.getVideoData({
+          number: app.options.categoryId,
+          path:path
+        }).then(result => {
+          app.videoData = result.data.data
+        }).catch(err => {
+          console.log('获取视频信息失败:', err)
+          // 保持默认分享信息
+        })
+        YControlApi.getArticleData({
+          number: app.options.categoryId,
+          path:path
+        }).then(result => {
+          app.articleData = result.data.data
+        }).catch(err => {
+          console.log('获取文章信息失败:', err) 
+          // 保持默认分享信息
+        })
+        YControlApi.getFAQConfigData({
+          number: app.options.categoryId,
+          path:path
+        }).then(result => {
+          app.FAQData = result.data.data
+        }).catch(err => {
+          console.log('获取问答信息失败:', err)
+          // 保持默认分享信息
+        })
+      },
+
     },
 
     /**
@@ -230,8 +376,9 @@
       // 构建分享参数
       const app = this
       return {
-        title: "商品列表",
-        path: "/pages/goods/list?" + this.$getShareUrlParams(app.options)
+        title: app.shareInfo.title || "福博寻宝 - 商品列表",
+        path: "/pages/goods/list?" + this.$getShareUrlParams(app.options),
+        imageUrl: app.shareInfo.imageUrl || '/static/fbback.png'
       }
     },
 
@@ -244,8 +391,9 @@
       // 构建分享参数
       const app = this
       return {
-        title: "商品列表",
-        path: "/pages/goods/list?" + this.$getShareUrlParams(app.options)
+        title: app.shareInfo.title || "福博寻宝 - 商品列表",
+        path: "/pages/goods/list?" + this.$getShareUrlParams(app.options),
+        imageUrl: app.shareInfo.imageUrl || '/static/fbback.png'
       }
     }
 

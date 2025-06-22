@@ -1,9 +1,8 @@
 <template>
-  <!-- 微信授权手机号一键登录 -->
-  <view class="wechat-auth">
+  <!-- 手机号快捷登录 -->
+  <view class="phone-auth">
     <button class="btn-normal" open-type="getPhoneNumber" @getphonenumber="handelMpWeixinMobileLogin($event)" @click="clickPhoneNumber">
-      <view class="wechat-auth-container">
-        <image class="icon" src="../../../static/channel/wechat.png"></image>
+      <view class="phone-auth-container">
         <text class="title">手机号快捷登录</text>
       </view>
     </button>
@@ -49,7 +48,7 @@
       async handelMpWeixinMobileLogin({ detail }) {
         const app = this
         if (detail.errMsg != 'getPhoneNumber:ok') {
-          console.log('微信授权获取手机号失败', detail)
+          console.log('手机号授权获取失败', detail)
           return
         }
         if (detail.errMsg == 'getPhoneNumber:ok') {
@@ -84,7 +83,7 @@
         }
       },
 
-      // 获取微信登录的code
+      // 获取登录的code
       // https://developers.weixin.qq.com/miniprogram/dev/api/open-api/login/wx.login.html
       getCode() {
         return new Promise((resolve, reject) => {
@@ -118,20 +117,14 @@
 </script>
 
 <style lang="scss" scoped>
-  // 微信授权登录
-  .wechat-auth {
+  // 手机号快捷登录
+  .phone-auth {
     width: 320rpx;
     margin: 50rpx auto 0 auto;
 
-    .wechat-auth-container {
+    .phone-auth-container {
       display: flex;
       justify-content: center;
-    }
-
-    .icon {
-      width: 38rpx;
-      height: 38rpx;
-      margin-right: 15rpx;
     }
 
     .title {

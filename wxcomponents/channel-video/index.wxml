@@ -1,0 +1,11 @@
+<view>
+	<channel-video
+		feed-id="{{feedId}}"
+		finder-user-name="{{finderUserName}}"
+		autoplay="{{autoplay}}"
+		bindplay="onVideoPlay"
+		bindpause="onVideoPause"
+		bindended="onVideoEnd"
+		binderror="onVideoError"
+	></channel-video>
+</view>
