@@ -1,11 +1,13 @@
 <template>
   <!-- 手机号快捷登录 -->
   <view class="phone-auth">
+    <!-- #ifndef MP-WEIXIN -->
     <button class="btn-normal" open-type="getPhoneNumber" @getphonenumber="handelMpWeixinMobileLogin($event)" @click="clickPhoneNumber">
       <view class="phone-auth-container">
         <text class="title">手机号快捷登录</text>
       </view>
     </button>
+    <!-- #endif -->
   </view>
 </template>
 
